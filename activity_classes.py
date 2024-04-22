@@ -1,13 +1,5 @@
-class CulturalHeritageObject(object):
-    def __init__(self, internal_id, title, external_id):
-        self.internal_id = internal_id
-        self.title = title
-        self.external_id = external_id
-
-
 class Activity(object):
-    def __init__(self, internal_id, institute, person, tools, start, end):
-        self.internal_id = internal_id
+    def __init__(self, institute, person, tools, start, end, refers_to):
         self.institute = institute
         self.person = person 
         self.tool = set()
@@ -15,9 +7,8 @@ class Activity(object):
             self.tool.add(Tool)
         self.start = start
         self.end = end
-
-         
-
+        self.refers_to = refers_to
+     
     def getResponsibleInsitute(self):
         return self.institute
     
@@ -37,36 +28,28 @@ class Activity(object):
         return self.end
 
     def refersTo (self):
-        for obj in CulturalHeritageObject:
-            if obj.external_id == self.internal_id:
-                return obj
-
-writing = Activity(internal_id= "2", institute="Unibo", person="Jimmy", tools={"pen", "pencil"}, start="Yesterday", end="Tomorrow")
-book = CulturalHeritageObject(internal_id= "1",title="ciao", external_id="2")
-
-print(writing.refersTo())
+        return self.refers_to
 
 class Acquisition(Activity):
-    def __init__(self, institute, person, tools, start, end, refersTo, technique):
+    def __init__(self, institute, person, tools, start, end, refers_to, technique):
         self.technique = technique    
-        super().__init__(institute, person, tools, start, end, refersTo)
+        super().__init__(institute, person, tools, start, end, refers_to)
         
     def getTechnique(self):
         return self.technique
 
 class Processing(Activity):
-    def __init__(self, institute, person, tools, start, end, refersTo):
-        super().__init__(institute, person, tools, start, end, refersTo)
+    def __init__(self, institute, person, tools, start, end, refers_to):
+        super().__init__(institute, person, tools, start, end, refers_to)
 
 class Modelling(Activity):
-    def __init__(self, institute, person, tools, start, end, refersTo):
-        super().__init__(institute, person, tools, start, end, refersTo)
+    def __init__(self, institute, person, tools, start, end, refers_to):
+        super().__init__(institute, person, tools, start, end, refers_to)
 
 class Optimizing(Activity):
-    def __init__(self, institute, person, tools, start, end, refersTo):
-        super().__init__(institute, person, tools, start, end, refersTo)
+    def __init__(self, institute, person, tools, start, end, refers_to):
+        super().__init__(institute, person, tools, start, end, refers_to)
 
 class Exporting(Activity):
-    def __init__(self, institute, person, tools, start, end, refersTo):
-        super().__init__(institute, person, tools, start, end, refersTo)
-
+    def __init__(self, institute, person, tools, start, end, refers_to):
+        super().__init__(institute, person, tools, start, end, refers_to)
