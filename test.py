@@ -8,7 +8,7 @@ class IdentifiableEntity(object):
 class Person(IdentifiableEntity):
     def __init__(self, name):
         self.name = name
-        super().__init__(self, id)
+        super().__init__(id)
     def getName(self):
         return self.name
 

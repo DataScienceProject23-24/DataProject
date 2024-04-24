@@ -35,7 +35,7 @@ class CulturalHeritageObject(object):
         return result_authors
     
 author_1 = Person(name="Jon")
-object_1 = CulturalHeritageObject(title="mio", date=1482, owner="me", place="here", authors=[author_1])
+object_1 = CulturalHeritageObject(title="mio", date=1482, owner="me", place="here", authors=["pip"])
 print(object_1.getAuthors())    
 
 class NauticalChart(CulturalHeritageObject):
