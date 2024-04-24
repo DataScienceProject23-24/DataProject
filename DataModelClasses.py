@@ -15,20 +15,25 @@ class Person(IdentifiableEntity):
 
 class CulturalHeritageObject(IdentifiableEntity):
     def __init__(self, title, date, owner, place, authors):
-        #title
-        #date
-        #owner
-        #place
+        self.title = title
+        self.date = date
+        self.owner = owner
+        self.place = place
         self.hasAuthor = set()
         for author in authors:
             self.hasAuthor.add(author)
         
-        super().__init__(self, id)
+        super().__init__(id)
 
-    #getTitle    
-    #getDate
-    #getOwner
-    #getPlace
+    
+    def getTitle(self):
+        return self.title
+    def getDate(self):
+        return self.date
+    def getOwner(self):
+        return self.owner
+    def getPlace(self):
+        return self.place
     
     def getAuthors(self):
         result_authors = []
@@ -36,6 +41,47 @@ class CulturalHeritageObject(IdentifiableEntity):
             result_authors.append(author)
         result_authors.sort()
         return result_authors
+    
+
+class NauticalChart(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
+
+class ManuscriptPlate(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
+
+class ManuscriptVolume(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
+
+class PrintedVolume(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
+
+class PrintedMaterial(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
+
+class Herbarium(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
+
+class Specimen(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
+
+class Painting(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
+
+class Model(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
+
+class Map(CulturalHeritageObject):
+    def __init__(self,title, date, owner, place, authors):
+        super().__init__(id, title, date, owner, place, authors)
     
 
 class Activity(object):
