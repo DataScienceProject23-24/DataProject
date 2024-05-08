@@ -3,27 +3,26 @@ import pandas as pd
 from sqlite3 import connect
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 
-class Handler (object):
-    def __init__(self, dbPathOrUrl):
-        self.dbPathOrUrl = dbPathOrUrl
-    def getdbPathOrUrl(self):
+class Handler(object):
+    def __init__(self):
+        self.dbPathOrUrl = ""
+    def getDbPathOrUrl(self):
         return self.dbPathOrUrl
-    def setdbPathOrUrl(self,pathOrUrl):
-        result = True
-        if pathOrUrl not in self.dbPathOrUrl:
-            self.dbPathOrUrl.add(pathOrUrl)
-        else:
-            result = False
-        return result
+    def setDbPathOrUrl(self,pathOrUrl:str):
+        self.dbPathOrUrl = pathOrUrl
+        return True
    
 class UploadHandler(Handler):
-    def pushDataToDb(self,path):
+    def __init__(self):
+        super().__init__()
+
+    def pushDataToDb(self):
         pass
 
 class MetadataUploadHandler(UploadHandler):
-    def pushDataToDb(self, path,dbPathOrUrl):
-        super().pushDataToDb(path)
-        super().dbPathOrUrl
+    def __init__(self):
+        super().__init__()
+    def pushDataToDb(self, path):
         my_graph = Graph()
         NauticalChart = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/NauticalChart") 
         ManuscriptPlate = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/ManuscriptPlate") 
@@ -121,7 +120,7 @@ class MetadataUploadHandler(UploadHandler):
         #upload the graph on triplestore
 
         store = SPARQLUpdateStore()
-        endpoint = dbPathOrUrl #my proxy for putting the data in the database
+        endpoint = self.getDbPathOrUrl() #my proxy for putting the data in the database
 
         #now I open the connection 
         store.open((endpoint, endpoint))
@@ -131,14 +130,15 @@ class MetadataUploadHandler(UploadHandler):
 
         store.close()
 
+        return True
+
 
 
 class ProcessDataUploadHandler(UploadHandler):
-    def pushDataToDb(self, path, dbPathOrUrl):
-        super().pushDataToDb(path)
-        super().dbPathOrUrl
+    def __init__(self):
+        super().__init__()
+    def pushDataToDb(self, path):
         process_json = pd.read_json(path)
-        
         object_ids=process_json[["object id"]]
         object_internal_id = []
         for idx, row in object_ids.iterrows():
@@ -153,12 +153,14 @@ class ProcessDataUploadHandler(UploadHandler):
             norm.insert((norm.shape[1]),"objectId",object_ids["objectId"])
             norm_df.append(norm)
         
-        with connect(dbPathOrUrl) as con:
+        with connect(self.getDbPathOrUrl()) as con:
             norm_df[0].to_sql("Acquisition", con, if_exists="replace", index=False)
             norm_df[1].to_sql("Processing", con, if_exists="replace", index=False)
             norm_df[2].to_sql("Modelling", con, if_exists="replace", index=False)
             norm_df[3].to_sql("Optimizing", con, if_exists="replace", index=False)
             norm_df[4].to_sql("Exporting", con, if_exists="replace", index=False)
+        
+        return True
 
 
 
