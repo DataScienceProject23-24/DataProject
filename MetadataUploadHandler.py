@@ -118,7 +118,8 @@ store.close()
 
 
 
-#cd  "C:\Users\annap\Documents\GitHub\DataProject\blazergraph"
+
+#cd "C:\Users\annap\Desktop\blazergraph"
 #java -server -Xmx1g -jar blazegraph.jar
 #http://127.0.0.1:9999/blazegraph/
 
@@ -128,7 +129,12 @@ store.close()
 #PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 #PREFIX schema: <https://schema.org/>
 
-
+#PROVA DOMANDA 
+#SELECT*
+#WHERE{
+#  ?s rdf:type schema:Book.
+#  ?s ?p ?o.
+#}
     
 #CI SONO I DATI SU AUTHOR PERCHè è ALL'INTERNO DEL CSV ORIGINALE. 
 # DEVE ESSERE MODIFICATO IN RELATION
