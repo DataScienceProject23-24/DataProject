@@ -44,44 +44,34 @@ class CulturalHeritageObject(IdentifiableEntity):
     
 
 class NauticalChart(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class ManuscriptPlate(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class ManuscriptVolume(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class PrintedVolume(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class PrintedMaterial(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Herbarium(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Specimen(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Painting(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Model(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Map(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
     
 
 class Activity(object):

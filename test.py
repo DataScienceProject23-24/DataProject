@@ -44,12 +44,10 @@ class CulturalHeritageObject(IdentifiableEntity):
     
 
 class NauticalChart(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class ManuscriptPlate(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class ManuscriptVolume(CulturalHeritageObject):
     def __init__(self,title, date, owner, place, authors):
