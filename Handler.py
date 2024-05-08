@@ -10,11 +10,8 @@ class Handler (object):
         else:
             result = False
         return result
-
-#need revision    
+   
 class UploadHandler(Handler):
-    def __init__(self,dbPathOrUrl):
-        super().__init__(dbPathOrUrl)
     def pushDataToDb(self,path):
         pass
 
@@ -22,11 +19,12 @@ class MetadataUploadHandler(UploadHandler):
     pass
 
 class ProcessDataUploadHandler(UploadHandler):
-    def __init__(self,dbPathOrUrl):
-        super().__init__(dbPathOrUrl)
+    def pushDataToDb(self, path, dbPathOrUrl):
+        super().pushDataToDb(path)
+        super().dbPathOrUrl
         import pandas as pd
         from sqlite3 import connect
-        process_json = pd.read_json("../resources/process.json") #need to change to path declaration
+        process_json = pd.read_json(path)
         
         object_ids=process_json[["object id"]]
         object_internal_id = []
