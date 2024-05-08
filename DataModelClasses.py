@@ -115,18 +115,14 @@ class Acquisition(Activity):
         return self.technique
 
 class Processing(Activity):
-    def __init__(self, institute, person, tools, start, end, refers_to):
-        super().__init__(institute, person, tools, start, end, refers_to)
+    pass
 
 class Modelling(Activity):
-    def __init__(self, institute, person, tools, start, end, refers_to):
-        super().__init__(institute, person, tools, start, end, refers_to)
+    pass
 
 class Optimizing(Activity):
-    def __init__(self, institute, person, tools, start, end, refers_to):
-        super().__init__(institute, person, tools, start, end, refers_to)
+    pass
 
 class Exporting(Activity):
-    def __init__(self, institute, person, tools, start, end, refers_to):
-        super().__init__(institute, person, tools, start, end, refers_to)
+    pass
         
