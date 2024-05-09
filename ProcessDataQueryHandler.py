@@ -62,6 +62,31 @@ class ProcessDataQueryHandler(QueryHandler):
             query = "SELECT * FROM *"
             df_sql = pd.read_sql(query, con)
             return df_sql
+    
+    def getActivitiesByResponsibleInstitutions(self, partialName):
+        with connect(self.getDbPathOrUrl()) as con:
+            query = f"SELECT * FROM  WHERE institute={partialName};"
+
+    def getActivitiesByResponsiblePerson(self, partialName):
+        with connect(self.getDbPathOrUrl()) as con:
+            query = f"SELECT * FROM  WHERE person={partialName};"
+    
+    def getActivitiesUsingTool(self, partialName):
+        with connect(self.getDbPathOrUrl()) as con:
+            query = f"SELECT * FROM  WHERE tool={partialName};"
+
+    def getActivitiesStartedAfter(self, date):
+        with connect(self.getDbPathOrUrl()) as con:
+            query = f"SELECT * FROM  WHERE start>={date};"
+
+    def getActivitiesEndedBefore(self, date):
+        with connect(self.getDbPathOrUrl()) as con:
+            query = f"SELECT * FROM  WHERE end<={date};"
+    
+    def getAcquisitionsByTechnique(self, partialName):
+        with connect(self.getDbPathOrUrl()) as con:
+            query = f"SELECT * FROM acquisition WHERE technique={partialName};"        
+
 
 path = Handler()
 path.setDbPathOrUrl("")
