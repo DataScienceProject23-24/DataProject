@@ -2,6 +2,7 @@ from rdflib import Graph, RDF, URIRef, Literal
 import pandas as pd
 from sqlite3 import connect
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
+from sparql_dataframe import get
 
 class Handler(object):
     def __init__(self):
@@ -46,10 +47,7 @@ class MetadataUploadHandler(UploadHandler):
         #relations 
         hasAuthor = URIRef("https://schema.org/author")
 
-
-
         #POPULATING THE RDF GRAPH 
-
 
         #I create a base url to be shared among all my objects
         base_url = "https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/"
@@ -67,14 +65,12 @@ class MetadataUploadHandler(UploadHandler):
                             "Type" : "string"
                         })
 
-
+        person_id = {}
         #now I insert all the objects in the graph 
         for idx, row in CulturalHeritageObject.iterrows():
-            local_id = "object-" + str(idx) #i create an id for every object 
-
+            local_id = "object-" + str(idx) #i create an id for every object
             subj = URIRef(base_url + local_id)
-
-
+            
             #I add all the statements:
             if row["Type"] == "Nautical chart":
                 my_graph.add((subj, RDF.type, NauticalChart))
@@ -116,7 +112,20 @@ class MetadataUploadHandler(UploadHandler):
                 my_graph.add((subj, owner, Literal(row["Owner"])))
             if row["Place"]:
                 my_graph.add((subj, place, Literal(row["Place"])))
+            
 
+            if row["Author"]!="":
+                person = row["Author"].split()
+                id_person = person[-1].replace("(","").replace(")","")
+                subj_person = URIRef(base_url + id_person)
+                person_id[row["Id"]] = subj_person
+                person_name = " ".join(person[0:len(person)-1])
+
+                my_graph.add((subj, hasAuthor, subj_person))
+                my_graph.add((subj_person, name, Literal(person_name)))
+
+
+        CulturalHeritageObject.pop("Author")
         #upload the graph on triplestore
 
         store = SPARQLUpdateStore()
@@ -132,8 +141,6 @@ class MetadataUploadHandler(UploadHandler):
 
         return True
 
-
-
 class ProcessDataUploadHandler(UploadHandler):
     def __init__(self):
         super().__init__()
@@ -142,7 +149,7 @@ class ProcessDataUploadHandler(UploadHandler):
         object_ids=process_json[["object id"]]
         object_internal_id = []
         for idx, row in object_ids.iterrows():
-            object_internal_id.append("object-" + str(idx+1))
+            object_internal_id.append("object-" + str(idx))
         object_ids.insert(0, "objectId", pd.Series(object_internal_id, dtype="string"))
         
         norm_df=[]
@@ -163,8 +170,38 @@ class ProcessDataUploadHandler(UploadHandler):
         return True
 
 
+class QueryHandler(Handler):
+    def __init__(self):
+        super().__init__()
+    def getById(self, id: str):
+        endpoint = self.getDbPathOrUrl()
+        query = """
+        PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX schema: <https://schema.org/>
 
+        SELECT ?id ?type ?title ?date ?owner ?place ?authorName
+        WHERE
+            {
+            SELECT* WHERE{
+            ?id schema:identifier '%i'.  
+            VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
+            ?id rdf:type ?type.
+            ?id schema:title ?title.
+            ?id schema:dateCreated ?date.
+            ?id schema:acquiredFrom ?owner.
+            ?id schema:location ?place.
+            OPTIONAL { SELECT * WHERE {
+              ?authorId schema:name ?authorName.
+              ?id schema:author ?authorId.}
+              }
+            }
+        }
+        """%(id)
+        df_entity = get(endpoint, query, True)
+        return df_entity
 
+    
 
 
 
