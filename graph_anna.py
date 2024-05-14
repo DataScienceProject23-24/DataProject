@@ -95,23 +95,22 @@ for idx, row in CulturalHeritageObject.iterrows():
         my_graph.add((subj, owner, Literal(row["Owner"])))
     if row["Place"]:
         my_graph.add((subj, place, Literal(row["Place"])))
-
-for idx, authors_list in enumerate(CulturalHeritageObject["Author"]):
-    if authors_list: 
-        authors = authors_list.split(";") #managin multiple authors (checked)
+        
+    
+    if row["Author"]:
+        authors = row["Author"].split(";") #managin multiple authors (checked)
         for author in authors:
             author_name, author_id = author.split(" (")            
             author_id = author_id[:-1] #i remove )
+            subj_person = URIRef(base_url + author_id)
+            
 
-            local_object_id = "object-" + str(idx)
-            subj = URIRef(base_url + local_object_id)
-            author_subj = URIRef(base_url + author_id)
-            my_graph.add((subj, hasAuthor, Literal(author_name)))
-            my_graph.add((author_subj, name, Literal(author_name)))
+            my_graph.add((subj, hasAuthor, subj_person))
+            my_graph.add((subj_person, name, Literal(author_name)))
+            my_graph.add((subj_person, id, Literal(author_id)))
 
 
-print(len(my_graph)) #--> 237 + 14 (correct)
-
+print(len(my_graph)) #--> 265= 237 + 14 authors + 14 author_id (correct)
 
 
 
@@ -126,7 +125,7 @@ for triple in my_graph.triples((None, None, None)):
 store.close()
 
 
-#cd C:\Users\annap\Desktop\blazegraph
+#cd "C:\Users\annap\Desktop\blazergraph"
 #java -server -Xmx1g -jar blazegraph.jar
 
 
