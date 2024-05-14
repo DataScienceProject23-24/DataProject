@@ -34,7 +34,7 @@ base_url = "https://github.com/DataScienceProject23-24/DataProject/tree/main/res
 
 
 #Now i read my DataFrame
-CulturalHeritageObject = pd.read_csv("meta.csv",
+CulturalHeritageObject = pd.read_csv("resources\meta.csv",
                             keep_default_na=False,
                             dtype={
                                "Id": "string",
@@ -100,15 +100,18 @@ for idx, authors_list in enumerate(CulturalHeritageObject["Author"]):
     if authors_list: 
         authors = authors_list.split(";") #managin multiple authors (checked)
         for author in authors:
-            name, author_id = author.split(" (")            
+            author_name, author_id = author.split(" (")            
             author_id = author_id[:-1] #i remove )
 
             local_object_id = "object-" + str(idx)
             subj = URIRef(base_url + local_object_id)
-            my_graph.add((subj, hasAuthor, Literal(name)))
+            author_subj = URIRef(base_url + author_id)
+            my_graph.add((subj, hasAuthor, Literal(author_name)))
+            my_graph.add((author_subj, name, Literal(author_name)))
 
 
-print(len(my_graph)) #--> 237 (correct)
+print(len(my_graph)) #--> 237 + 14 (correct)
+
 
 
 
