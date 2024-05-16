@@ -114,15 +114,17 @@ class MetadataUploadHandler(UploadHandler):
                 my_graph.add((subj, place, Literal(row["Place"])))
             
 
-            if row["Author"]!="":
-                person = row["Author"].split()
-                id_person = person[-1].replace("(","").replace(")","")
-                subj_person = URIRef(base_url + id_person)
-                person_id[row["Id"]] = subj_person
-                person_name = " ".join(person[0:len(person)-1])
+            if row["Author"]:
+                authors = row["Author"].split(";") #managin multiple authors (checked)
+                for author in authors:
+                    author_name, author_id = author.split(" (")            
+                    author_id = author_id[:-1] #i remove )
+                    subj_person = URIRef(base_url + author_id)
+                    
 
-                my_graph.add((subj, hasAuthor, subj_person))
-                my_graph.add((subj_person, name, Literal(person_name)))
+                    my_graph.add((subj, hasAuthor, subj_person))
+                    my_graph.add((subj_person, name, Literal(author_name)))
+                    my_graph.add((subj_person, id, Literal(author_id)))
 
 
         CulturalHeritageObject.pop("Author")
@@ -147,26 +149,37 @@ class ProcessDataUploadHandler(UploadHandler):
     def pushDataToDb(self, path):
         process_json = pd.read_json(path)
         object_ids=process_json[["object id"]]
-        object_internal_id = []
+        object_id = []
         for idx, row in object_ids.iterrows():
-            object_internal_id.append("object-" + str(idx))
-        object_ids.insert(0, "objectId", pd.Series(object_internal_id, dtype="string"))
+            object_id.append("object-" + str(idx))
+        object_ids.insert(0, "objectId", pd.Series(object_id, dtype="string"))
         
         norm_df=[]
+        activity_id = []
+        activities_df = pd.DataFrame()
         cols = ["acquisition","processing","modelling","optimising","exporting"]
         for col in cols:
             norm = pd.json_normalize(process_json[col])
             norm["tool"] = norm["tool"].astype("str")
             norm.insert((norm.shape[1]),"objectId",object_ids["objectId"])
+            internal_id = []
+            for idx, row in norm.iterrows():
+                internal_id.append(col + "-" + str(idx))
+                activity_id.append(col + "-" + str(idx))
+            norm.insert(loc=0, column='internalId', value=internal_id)
             norm_df.append(norm)
         
+        activities_df["activityId"] = activity_id
+
+        
         with connect(self.getDbPathOrUrl()) as con:
+            activities_df.to_sql("Activities", con, if_exists="replace", index=False)
             norm_df[0].to_sql("Acquisition", con, if_exists="replace", index=False)
             norm_df[1].to_sql("Processing", con, if_exists="replace", index=False)
             norm_df[2].to_sql("Modelling", con, if_exists="replace", index=False)
             norm_df[3].to_sql("Optimizing", con, if_exists="replace", index=False)
             norm_df[4].to_sql("Exporting", con, if_exists="replace", index=False)
-        
+
         return True
 
 
@@ -200,9 +213,4 @@ class QueryHandler(Handler):
         """%(id)
         df_entity = get(endpoint, query, True)
         return df_entity
-
-    
-
-
-
 
