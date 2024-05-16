@@ -58,7 +58,8 @@ class ProcessDataQueryHandler(QueryHandler):
         super().__init__()
     
     def getAllActivities(self):
-        with connect(self.getDbPathOrUrl()) as con:
+        a = ProcessDataUploadHandler()
+        with connect(a.getDbPathOrUrl()) as con:
             query = "SELECT * FROM *"
             df_sql = pd.read_sql(query, con)
             return df_sql
