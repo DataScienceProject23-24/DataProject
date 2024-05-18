@@ -198,7 +198,7 @@ class QueryHandler(Handler):
         WHERE
             {
             SELECT* WHERE{
-            ?id schema:identifier '6'.  
+            ?id schema:identifier '%s'.  
             VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
             ?id rdf:type ?type.
             ?id schema:title ?title.
@@ -256,7 +256,7 @@ class MetadataQueryHandler(QueryHandler):
         return df_sparql_getAllCulturalHeritageObjects
 
 
-    def getAuthorsOfCulturalHeritageObject(self):
+    def getAuthorsOfCulturalHeritageObject(self, objectId: str):
         endpoint = self.getDbPathOrUrl()
         query_getAuthorsOfCulturalHeritageObject = """"
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
@@ -265,19 +265,19 @@ class MetadataQueryHandler(QueryHandler):
 
         SELECT ?authorId ?authorName
         WHERE {
-        ?object schema:identifier '%i'.
+        ?object schema:identifier '%s'.
         ?object schema:author ?author .
         ?author schema:identifier ?authorId.
         ?author schema:name ?authorName .
         }
 
-        """
+        """%(objectId)
         df_sparql_getAuthorsOfCulturalHeritageObject = get(endpoint, query_getAuthorsOfCulturalHeritageObject, True)
         return df_sparql_getAuthorsOfCulturalHeritageObject
 
 
 
-    def getCulturalHeritageObjectsAuthoredBy(self):         # PROBLEMSSSSSSSSSSSSSSSSSSS 
+    def getCulturalHeritageObjectsAuthoredBy(self, personId: str):         # PROBLEMSSSSSSSSSSSSSSSSSSS 
         endpoint = self.getDbPathOrUrl()
         query_getCulturalHeritageObjectsAuthoredBy = """"
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
@@ -286,13 +286,15 @@ class MetadataQueryHandler(QueryHandler):
 
         SELECT ?type ?title
         WHERE {
-        ?author schema:identifier '%i'.
+        ?author schema:identifier '%s'.
         ?object schema:author ?author .
         ?object rdf:type ?type.
         ?object schema:title ?title.
 
         }
-        """
+        """%(personId)
 
         df_sparql_getCulturalHeritageObjectsAuthoredBy = get(endpoint, query_getCulturalHeritageObjectsAuthoredBy, True)
         return df_sparql_getCulturalHeritageObjectsAuthoredBy
+    
+
