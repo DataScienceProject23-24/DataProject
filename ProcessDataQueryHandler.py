@@ -127,16 +127,55 @@ class ProcessDataQueryHandler(QueryHandler):
 
     def getActivitiesStartedAfter(self, date):
         with connect(self.getDbPathOrUrl()) as con:
-            query = f"SELECT * FROM  WHERE start>={date};"
+            q1 = f"SELECT * FROM Acquisition WHERE start>= '{date}';"
+            df_ac = pd.read_sql(q1, con)
+            q2= f"SELECT * FROM Processing WHERE start>= '{date}';"
+            df_pr = pd.read_sql(q2, con)
+            q3 = f"SELECT * FROM Modelling WHERE start>= '{date}';"
+            df_mod = pd.read_sql(q3,con)
+            q4 = f"SELECT * FROM Optimizing WHERE start>= '{date}';"
+            df_opt = pd.read_sql(q4,con)
+            q5 = f"SELECT * FROM Exporting WHERE start>= '{date}';"
+            df_ex = pd.read_sql(q5,con)
+
+            union_list = [df_ac, df_pr, df_mod, df_opt, df_ex]
+            df_union = pd.concat(union_list, ignore_index=True)
+            return df_union
+
 
     def getActivitiesEndedBefore(self, date):
         with connect(self.getDbPathOrUrl()) as con:
-            query = f"SELECT * FROM  WHERE end<={date};"
+            q1 = f"SELECT * FROM Acquisition WHERE end<= '{date}';"
+            df_ac = pd.read_sql(q1, con)
+            q2= f"SELECT * FROM Processing WHERE end<= '{date}';"
+            df_pr = pd.read_sql(q2, con)
+            q3 = f"SELECT * FROM Modelling WHERE end<= '{date}';"
+            df_mod = pd.read_sql(q3,con)
+            q4 = f"SELECT * FROM Optimizing WHERE end<= '{date}';"
+            df_opt = pd.read_sql(q4,con)
+            q5 = f"SELECT * FROM Exporting WHERE end<= '{date}';"
+            df_ex = pd.read_sql(q5,con)
+
+            union_list = [df_ac, df_pr, df_mod, df_opt, df_ex]
+            df_union = pd.concat(union_list, ignore_index=True)
+            return df_union
     
     def getAcquisitionsByTechnique(self, partialName):
-        with connect(self.getDbPathOrUrl()) as con:
-            query = f"SELECT * FROM acquisition WHERE technique={partialName};"        
+        with connect(self.getDbPathOrUrl()) as con:        
+            q1 = f"SELECT * FROM Acquisition WHERE technique= '%{partialName}';"
+            df_ac = pd.read_sql(q1, con)
+            q2= f"SELECT * FROM Processing WHERE technique= '%{partialName}';"
+            df_pr = pd.read_sql(q2, con)
+            q3 = f"SELECT * FROM Modelling WHERE technique= '%{partialName}';"
+            df_mod = pd.read_sql(q3,con)
+            q4 = f"SELECT * FROM Optimizing WHERE technique= '%{partialName}';"
+            df_opt = pd.read_sql(q4,con)
+            q5 = f"SELECT * FROM Exporting WHERE technique= '%{partialName}';"
+            df_ex = pd.read_sql(q5,con)
 
+            union_list = [df_ac, df_pr, df_mod, df_opt, df_ex]
+            df_union = pd.concat(union_list, ignore_index=True)
+            return df_union
 
 
 data = ProcessDataUploadHandler()
