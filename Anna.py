@@ -115,7 +115,7 @@ class MetadataUploadHandler(UploadHandler):
                 my_graph.add((subj, place, Literal(row["Place"])))
             
 
-            if row["Author"] !="":
+            if row["Author"] != "":
                 authors = row["Author"].split(";") #managin multiple authors (checked)
                 for author in authors:
                     author_name, author_id = author.split(" (")            
@@ -187,7 +187,8 @@ class ProcessDataUploadHandler(UploadHandler):
 class QueryHandler(Handler):
     def __init__(self):
         super().__init__()
-    def getById(self, id: str):
+
+    def getById(self, id: str):                 #should we try to get also Authors ids??????????
         endpoint = self.getDbPathOrUrl()
         query = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
@@ -198,7 +199,7 @@ class QueryHandler(Handler):
         WHERE
             {
             SELECT* WHERE{
-            ?id schema:identifier '6'.  
+            ?id schema:identifier '%i'.  
             VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
             ?id rdf:type ?type.
             ?id schema:title ?title.
@@ -214,6 +215,8 @@ class QueryHandler(Handler):
         """%(id)
         df_entity = get(endpoint, query, True)
         return df_entity
+
+
 
 
 #  A N N A  #
@@ -296,3 +299,4 @@ class MetadataQueryHandler(QueryHandler):
 
         df_sparql_getCulturalHeritageObjectsAuthoredBy = get(endpoint, query_getCulturalHeritageObjectsAuthoredBy, True)
         return df_sparql_getCulturalHeritageObjectsAuthoredBy
+
