@@ -66,7 +66,7 @@ class MetadataUploadHandler(UploadHandler):
                             "Type" : "string"
                         })
 
-        person_id = {}
+        
         #now I insert all the objects in the graph 
         for idx, row in CulturalHeritageObject.iterrows():
             local_id = "object-" + str(idx) #i create an id for every object
@@ -121,8 +121,7 @@ class MetadataUploadHandler(UploadHandler):
                     author_name, author_id = author.split(" (")            
                     author_id = author_id[:-1] #i remove )
                     subj_person = URIRef(base_url + author_id)
-                    
-
+                
                     my_graph.add((subj, hasAuthor, subj_person))
                     my_graph.add((subj_person, name, Literal(author_name)))
                     my_graph.add((subj_person, id, Literal(author_id)))
@@ -222,7 +221,7 @@ class MetadataQueryHandler(QueryHandler):
     def __init__(self):
         super().__init__()
 
-    def getAllPeople(self):                    #also from JSON DON'T KNOW HOW  !! !!!!!!!!!!!!!
+    def getAllPeople(self):                    #also from JSON DON'T KNOW HOW  ??????????
         endpoint = self.getDbPathOrUrl()
         query_getAllPeople = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
@@ -240,16 +239,16 @@ class MetadataQueryHandler(QueryHandler):
         return df_sparql_getAllPeople
 
 
-    def getAllCulturalHeritageObjects(self):        #is it ok to retrieve the URI or we want the name?
+    def getAllCulturalHeritageObjects(self):        
         endpoint = self.getDbPathOrUrl()
         query_getAllCulturalHeritageObjects = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?type
+        SELECT ?object
         WHERE {
-        ?s rdf:type ?type.
+        ?object rdf:type ?type .
         }
         """
         df_sparql_getAllCulturalHeritageObjects = get(endpoint, query_getAllCulturalHeritageObjects, True)
@@ -284,13 +283,11 @@ class MetadataQueryHandler(QueryHandler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?type ?title
+        SELECT ?type 
         WHERE {
         ?author schema:identifier '%s'.
         ?object schema:author ?author .
         ?object rdf:type ?type.
-        ?object schema:title ?title.
-
         }
         """%(personId)
 
