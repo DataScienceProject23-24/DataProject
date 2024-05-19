@@ -100,7 +100,7 @@ class ProcessDataQueryHandler(QueryHandler):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = "SELECT * FROM Acquisition"
             df_a = pd.read_sql(q1, con)
-            q2="SELECT * FROM Processing"
+            q2 = "SELECT * FROM Processing"
             df_p = pd.read_sql(q2,con)
             q3 = "SELECT * FROM Modelling"
             df_m = pd.read_sql(q3,con)
@@ -115,15 +115,49 @@ class ProcessDataQueryHandler(QueryHandler):
     
     def getActivitiesByResponsibleInstitutions(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
-            query = f"SELECT * FROM  WHERE institute={partialName};"
+            cursor = con.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+            tables = cursor.fetchall()
+            union_list = []
+            for table in tables:
+                table_name = table[0]
+                query = f'SELECT "responsible institute" FROM {table_name} WHERE "responsible institute" LIKE ?;'
+                df = pd.read_sql(query, con, params=(f"%{partialName}%",))
+                union_list.append(df)
+            
+            df_union = pd.concat(union_list, ignore_index=True)
+            return df_union
 
     def getActivitiesByResponsiblePerson(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
-            query = f"SELECT * FROM  WHERE person={partialName};"
+            cursor = con.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+            tables = cursor.fetchall()
+            union_list = []
+            for table in tables:
+                table_name = table[0]
+                query = f'SELECT "responsible person" FROM {table_name} WHERE "responsible person" LIKE ?;'
+                df = pd.read_sql(query, con, params=(f"%{partialName}%",))
+                union_list.append(df)
+            
+            df_union = pd.concat(union_list, ignore_index=True)
+            return df_union  
     
     def getActivitiesUsingTool(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
-            query = f"SELECT * FROM  WHERE tool={partialName};"
+            cursor = con.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+            tables = cursor.fetchall()
+            union_list = []
+            for table in tables:
+                table_name = table[0]
+                query = f'SELECT tool FROM {table_name};'
+                df = pd.read_sql(query, con)
+                df_result = df[df['tool'].apply(lambda tools: any(partialName in tool for tool in tools))]
+                union_list.append(df_result)
+            
+            df_union = pd.concat(union_list, ignore_index=True)
+            return df_union
 
     def getActivitiesStartedAfter(self, date):
         with connect(self.getDbPathOrUrl()) as con:
