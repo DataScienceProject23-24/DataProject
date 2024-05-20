@@ -3,6 +3,7 @@ import pandas as pd
 from sqlite3 import connect
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 from sparql_dataframe import get
+from pprint import pprint
 
 class Handler(object):
     def __init__(self):
@@ -95,7 +96,7 @@ class QueryHandler(Handler):
 class ProcessDataQueryHandler(QueryHandler):
     def __init__(self):
         super().__init__()
-    
+  
     def getAllActivities(self):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = "SELECT * FROM Acquisition"
@@ -112,53 +113,51 @@ class ProcessDataQueryHandler(QueryHandler):
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
-    
-    def getActivitiesByResponsibleInstitutions(self, partialName):
-        with connect(self.getDbPathOrUrl()) as con:
-            cursor = con.cursor()
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-            tables = cursor.fetchall()
-            union_list = []
-            for table in tables:
-                table_name = table[0]
-                query = f'SELECT "responsible institute" FROM {table_name} WHERE "responsible institute" LIKE ?;'
-                df = pd.read_sql(query, con, params=(f"%{partialName}%",))
-                union_list.append(df)
-            
-            df_union = pd.concat(union_list, ignore_index=True)
-            return df_union
 
+    def getActivitiesByResponsibleInstitutions(self, partialName):
+        df_activities = self.getAllActivities()
+        df = df_activities[df_activities["responsible institute"].str.contains(partialName, na=False, case=False)].reset_index(drop=True)
+        return df     
+    
     def getActivitiesByResponsiblePerson(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
-            cursor = con.cursor()
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-            tables = cursor.fetchall()
-            union_list = []
-            for table in tables:
-                table_name = table[0]
-                query = f'SELECT "responsible person" FROM {table_name} WHERE "responsible person" LIKE ?;'
-                df = pd.read_sql(query, con, params=(f"%{partialName}%",))
-                union_list.append(df)
-            
-            df_union = pd.concat(union_list, ignore_index=True)
-            return df_union  
-    
-    def getActivitiesUsingTool(self, partialName):
-        with connect(self.getDbPathOrUrl()) as con:
-            cursor = con.cursor()
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-            tables = cursor.fetchall()
-            union_list = []
-            for table in tables:
-                table_name = table[0]
-                query = f'SELECT tool FROM {table_name};'
-                df = pd.read_sql(query, con)
-                df_result = df[df['tool'].apply(lambda tools: any(partialName in tool for tool in tools))]
-                union_list.append(df_result)
-            
+            q1 = 'SELECT * FROM Acquisition WHERE "responsible person" LIKE ?;'
+            df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
+            q2 = 'SELECT * FROM Processing WHERE "responsible person" LIKE ?;'
+            df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
+            q3 = 'SELECT * FROM Modelling WHERE "responsible person" LIKE ?;'
+            df_m = pd.read_sql(q3, con, params=(f"%{partialName}%",))
+            q4 = 'SELECT * FROM Optimizing WHERE "responsible person" LIKE ?;'
+            df_o = pd.read_sql(q4, con, params=(f"%{partialName}%",))
+            q5 = 'SELECT * FROM Exporting WHERE "responsible person" LIKE ?;'
+            df_e = pd.read_sql(q5, con, params=(f"%{partialName}%",))
+
+            union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
 
+
+    def getActivitiesUsingTool(self, partialName):
+        df_activities = self.getAllActivities()
+        df = df_activities[df_activities["tool"].str.contains(partialName, na=False, case=False)].reset_index(drop=True)
+        return df 
+        '''
+        with connect(self.getDbPathOrUrl()) as con:
+            q1 = 'SELECT * FROM Acquisition WHERE "tool" LIKE ?;'
+            df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
+            q2 = 'SELECT * FROM Processing WHERE "tool" LIKE ?;'
+            df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
+            q3 = 'SELECT * FROM Modelling WHERE "tool" LIKE ?;'
+            df_m = pd.read_sql(q3, con, params=(f"%{partialName}%",))
+            q4 = 'SELECT * FROM Optimizing WHERE "tool" LIKE ?;'
+            df_o = pd.read_sql(q4, con, params=(f"%{partialName}%",))
+            q5 = 'SELECT * FROM Exporting WHERE "tool" LIKE ?;'
+            df_e = pd.read_sql(q5, con, params=(f"%{partialName}%",))
+
+            union_list = [df_a, df_p, df_m, df_o, df_e]
+            df_union = pd.concat(union_list, ignore_index=True)
+            return df_union
+        '''
     def getActivitiesStartedAfter(self, date):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = f"SELECT * FROM Acquisition WHERE start>= '{date}';"
@@ -213,13 +212,14 @@ class ProcessDataQueryHandler(QueryHandler):
 
 
 data = ProcessDataUploadHandler()
-data.setDbPathOrUrl("process.json")
+data.setDbPathOrUrl("database.db")
 data.pushDataToDb("process.json")
 
-#query_handler = ProcessDataQueryHandler()        
+query_handler = ProcessDataQueryHandler()        
+query_handler.setDbPathOrUrl("database.db")
 
-#df_activities = query_handler.getAllActivities()
+df_activities = query_handler.getActivitiesByResponsiblePerson("Jane")
 
-#pprint(df_activities)
+pprint(df_activities.to_dict())
 
-print(data)           
+         
