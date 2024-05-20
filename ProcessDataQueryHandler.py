@@ -158,55 +158,57 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
         '''
+  
     def getActivitiesStartedAfter(self, date):
         with connect(self.getDbPathOrUrl()) as con:
-            q1 = f"SELECT * FROM Acquisition WHERE start>= '{date}';"
-            df_ac = pd.read_sql(q1, con)
-            q2= f"SELECT * FROM Processing WHERE start>= '{date}';"
-            df_pr = pd.read_sql(q2, con)
-            q3 = f"SELECT * FROM Modelling WHERE start>= '{date}';"
-            df_mod = pd.read_sql(q3,con)
-            q4 = f"SELECT * FROM Optimizing WHERE start>= '{date}';"
-            df_opt = pd.read_sql(q4,con)
-            q5 = f"SELECT * FROM Exporting WHERE start>= '{date}';"
-            df_ex = pd.read_sql(q5,con)
+            q1 = "SELECT * FROM Acquisition WHERE start >= ?;"
+            df_a = pd.read_sql(q1, con, params=(date,))
+            q2= "SELECT * FROM Processing WHERE start >= ?;"
+            df_p = pd.read_sql(q2, con, params=(date,))
+            q3 = "SELECT * FROM Modelling WHERE start >= ?;"
+            df_m = pd.read_sql(q3,con,params=(date,))
+            q4 = "SELECT * FROM Optimizing WHERE start >= ?;"
+            df_o = pd.read_sql(q4,con,params=(date,))
+            q5 = "SELECT * FROM Exporting WHERE start >= ?;"
+            df_e = pd.read_sql(q5,con, params=(date,))
 
-            union_list = [df_ac, df_pr, df_mod, df_opt, df_ex]
+            union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
 
 
     def getActivitiesEndedBefore(self, date):
         with connect(self.getDbPathOrUrl()) as con:
-            q1 = f"SELECT * FROM Acquisition WHERE end<= '{date}';"
-            df_ac = pd.read_sql(q1, con)
-            q2= f"SELECT * FROM Processing WHERE end<= '{date}';"
-            df_pr = pd.read_sql(q2, con)
-            q3 = f"SELECT * FROM Modelling WHERE end<= '{date}';"
-            df_mod = pd.read_sql(q3,con)
-            q4 = f"SELECT * FROM Optimizing WHERE end<= '{date}';"
-            df_opt = pd.read_sql(q4,con)
-            q5 = f"SELECT * FROM Exporting WHERE end<= '{date}';"
-            df_ex = pd.read_sql(q5,con)
+            q1 = "SELECT * FROM Acquisition WHERE end <= ?;"
+            df_a = pd.read_sql(q1, con, params=(date,))
+            q2= "SELECT * FROM Processing WHERE end <= ?;"
+            df_p = pd.read_sql(q2, con, params=(date,))
+            q3 = "SELECT * FROM Modelling WHERE end <= ?;"
+            df_m = pd.read_sql(q3,con, params=(date,))
+            q4 = "SELECT * FROM Optimizing WHERE end <= ?;"
+            df_o = pd.read_sql(q4,con, params=(date,))
+            q5 = "SELECT * FROM Exporting WHERE end <= ?;"
+            df_e = pd.read_sql(q5,con, params=(date,))
 
-            union_list = [df_ac, df_pr, df_mod, df_opt, df_ex]
+            union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
+
     
     def getAcquisitionsByTechnique(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:        
-            q1 = f"SELECT * FROM Acquisition WHERE technique= '%{partialName}';"
-            df_ac = pd.read_sql(q1, con)
-            q2= f"SELECT * FROM Processing WHERE technique= '%{partialName}';"
-            df_pr = pd.read_sql(q2, con)
-            q3 = f"SELECT * FROM Modelling WHERE technique= '%{partialName}';"
-            df_mod = pd.read_sql(q3,con)
-            q4 = f"SELECT * FROM Optimizing WHERE technique= '%{partialName}';"
-            df_opt = pd.read_sql(q4,con)
-            q5 = f"SELECT * FROM Exporting WHERE technique= '%{partialName}';"
-            df_ex = pd.read_sql(q5,con)
+            q1 = 'SELECT * FROM Acquisition WHERE "technique" LIKE ?;'
+            df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
+            q2= 'SELECT * FROM Processing WHERE "technique" LIKE ?;'
+            df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
+            q3 = 'SELECT * FROM Modelling WHERE "technique" LIKE ?;'
+            df_m = pd.read_sql(q3,con,params=(f"%{partialName}%",))
+            q4 = 'SELECT * FROM Optimizing WHERE "technique" LIKE ?;'
+            df_o = pd.read_sql(q4,con, params=(f"%{partialName}%",))
+            q5 = 'SELECT * FROM Exporting WHERE "technique" LIKE ?;'
+            df_e = pd.read_sql(q5,con, params=(f"%{partialName}%",))
 
-            union_list = [df_ac, df_pr, df_mod, df_opt, df_ex]
+            union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
 
@@ -218,8 +220,14 @@ data.pushDataToDb("process.json")
 query_handler = ProcessDataQueryHandler()        
 query_handler.setDbPathOrUrl("database.db")
 
-df_activities = query_handler.getActivitiesByResponsiblePerson("Jane")
+#df_activities = query_handler.getActivitiesByResponsiblePerson("Jane")
+#df_technique = query_handler.getAcquisitionsByTechnique("Photogrammetry")
+df_activities_ended_before = query_handler.getActivitiesEndedBefore("2024")
 
-pprint(df_activities.to_dict())
+
+#pprint(df_activities.to_dict())
+#pprint(df_technique.to_dict())
+pprint(df_activities_ended_before.to_dict())
+
 
          
