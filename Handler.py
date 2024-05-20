@@ -289,7 +289,7 @@ class MetadataQueryHandler(QueryHandler):
         ?object schema:author ?author .
         ?object rdf:type ?type.
         }
-        """%(personId)
+        """%(personId) #needs to be inside " "
 
         df_sparql_getCulturalHeritageObjectsAuthoredBy = get(endpoint, query_getCulturalHeritageObjectsAuthoredBy, True)
         return df_sparql_getCulturalHeritageObjectsAuthoredBy
