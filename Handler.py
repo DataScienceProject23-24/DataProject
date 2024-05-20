@@ -276,7 +276,7 @@ class MetadataQueryHandler(QueryHandler):
 
 
 
-    def getCulturalHeritageObjectsAuthoredBy(self, personId: str):         # PROBLEMSSSSSSSSSSSSSSSSSSS 
+    def getCulturalHeritageObjectsAuthoredBy(self, personId: str):        
         endpoint = self.getDbPathOrUrl()
         query_getCulturalHeritageObjectsAuthoredBy = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
