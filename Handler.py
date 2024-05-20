@@ -257,7 +257,7 @@ class MetadataQueryHandler(QueryHandler):
 
     def getAuthorsOfCulturalHeritageObject(self, objectId: str):
         endpoint = self.getDbPathOrUrl()
-        query_getAuthorsOfCulturalHeritageObject = """"
+        query_getAuthorsOfCulturalHeritageObject = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
@@ -278,7 +278,7 @@ class MetadataQueryHandler(QueryHandler):
 
     def getCulturalHeritageObjectsAuthoredBy(self, personId: str):         # PROBLEMSSSSSSSSSSSSSSSSSSS 
         endpoint = self.getDbPathOrUrl()
-        query_getCulturalHeritageObjectsAuthoredBy = """"
+        query_getCulturalHeritageObjectsAuthoredBy = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
