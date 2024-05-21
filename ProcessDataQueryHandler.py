@@ -161,15 +161,15 @@ class ProcessDataQueryHandler(QueryHandler):
   
     def getActivitiesStartedAfter(self, date):
         with connect(self.getDbPathOrUrl()) as con:
-            q1 = "SELECT * FROM Acquisition WHERE start >= ?;"
+            q1 = 'SELECT * FROM Acquisition WHERE "start date" >= ?;'
             df_a = pd.read_sql(q1, con, params=(date,))
-            q2= "SELECT * FROM Processing WHERE start >= ?;"
+            q2= 'SELECT * FROM Processing WHERE "start date" >= ?;'
             df_p = pd.read_sql(q2, con, params=(date,))
-            q3 = "SELECT * FROM Modelling WHERE start >= ?;"
+            q3 = 'SELECT * FROM Modelling WHERE "start date" >= ?;'
             df_m = pd.read_sql(q3,con,params=(date,))
-            q4 = "SELECT * FROM Optimizing WHERE start >= ?;"
+            q4 = 'SELECT * FROM Optimizing WHERE "start date" >= ?;'
             df_o = pd.read_sql(q4,con,params=(date,))
-            q5 = "SELECT * FROM Exporting WHERE start >= ?;"
+            q5 = 'SELECT * FROM Exporting WHERE "start date" >= ?;'
             df_e = pd.read_sql(q5,con, params=(date,))
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
@@ -179,15 +179,15 @@ class ProcessDataQueryHandler(QueryHandler):
 
     def getActivitiesEndedBefore(self, date):
         with connect(self.getDbPathOrUrl()) as con:
-            q1 = "SELECT * FROM Acquisition WHERE end <= ?;"
+            q1 = 'SELECT * FROM Acquisition WHERE "end date" <= ?;'
             df_a = pd.read_sql(q1, con, params=(date,))
-            q2= "SELECT * FROM Processing WHERE end <= ?;"
+            q2= 'SELECT * FROM Processing WHERE "end date" <= ?;'
             df_p = pd.read_sql(q2, con, params=(date,))
-            q3 = "SELECT * FROM Modelling WHERE end <= ?;"
+            q3 = 'SELECT * FROM Modelling WHERE "end date" <= ?;'
             df_m = pd.read_sql(q3,con, params=(date,))
-            q4 = "SELECT * FROM Optimizing WHERE end <= ?;"
+            q4 = 'SELECT * FROM Optimizing WHERE "end date" <= ?;'
             df_o = pd.read_sql(q4,con, params=(date,))
-            q5 = "SELECT * FROM Exporting WHERE end <= ?;"
+            q5 = 'SELECT * FROM Exporting WHERE "end date" <= ?;'
             df_e = pd.read_sql(q5,con, params=(date,))
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
@@ -222,12 +222,13 @@ query_handler.setDbPathOrUrl("database.db")
 
 #df_activities = query_handler.getActivitiesByResponsiblePerson("Jane")
 #df_technique = query_handler.getAcquisitionsByTechnique("Photogrammetry")
-df_activities_ended_before = query_handler.getActivitiesEndedBefore("2024")
+#df_activities_ended_before = query_handler.getActivitiesEndedBefore("2023-04-21")
+df_activities_started_after = query_handler.getActivitiesStartedAfter("2023")
 
 
 #pprint(df_activities.to_dict())
 #pprint(df_technique.to_dict())
-pprint(df_activities_ended_before.to_dict())
+pprint(df_activities_started_after.to_dict())
 
 
          
