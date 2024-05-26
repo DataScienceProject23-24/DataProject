@@ -66,7 +66,7 @@ class MetadataUploadHandler(UploadHandler):
                             "Type" : "string"
                         })
 
-        
+        person_id = {}
         #now I insert all the objects in the graph 
         for idx, row in CulturalHeritageObject.iterrows():
             local_id = "object-" + str(idx) #i create an id for every object
@@ -115,13 +115,14 @@ class MetadataUploadHandler(UploadHandler):
                 my_graph.add((subj, place, Literal(row["Place"])))
             
 
-            if row["Author"] !="":
+            if row["Author"] != "":
                 authors = row["Author"].split(";") #managin multiple authors (checked)
                 for author in authors:
                     author_name, author_id = author.split(" (")            
                     author_id = author_id[:-1] #i remove )
                     subj_person = URIRef(base_url + author_id)
-                
+                    
+
                     my_graph.add((subj, hasAuthor, subj_person))
                     my_graph.add((subj_person, name, Literal(author_name)))
                     my_graph.add((subj_person, id, Literal(author_id)))
@@ -186,7 +187,8 @@ class ProcessDataUploadHandler(UploadHandler):
 class QueryHandler(Handler):
     def __init__(self):
         super().__init__()
-    def getById(self, id: str):
+
+    def getById(self, id: str):                 #should we try to get also Authors ids??????????
         endpoint = self.getDbPathOrUrl()
         query = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
@@ -197,7 +199,7 @@ class QueryHandler(Handler):
         WHERE
             {
             SELECT* WHERE{
-            ?id schema:identifier '%s'.  
+            ?id schema:identifier '%i'.  
             VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
             ?id rdf:type ?type.
             ?id schema:title ?title.
@@ -215,13 +217,15 @@ class QueryHandler(Handler):
         return df_entity
 
 
+
+
 #  A N N A  #
 
 class MetadataQueryHandler(QueryHandler):
     def __init__(self):
         super().__init__()
 
-    def getAllPeople(self):                    #also from JSON DON'T KNOW HOW  ??????????
+    def getAllPeople(self):                    #also from JSON DON'T KNOW HOW  !! !!!!!!!!!!!!!
         endpoint = self.getDbPathOrUrl()
         query_getAllPeople = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
@@ -239,59 +243,60 @@ class MetadataQueryHandler(QueryHandler):
         return df_sparql_getAllPeople
 
 
-    def getAllCulturalHeritageObjects(self):        
+    def getAllCulturalHeritageObjects(self):        #is it ok to retrieve the URI or we want the name?
         endpoint = self.getDbPathOrUrl()
         query_getAllCulturalHeritageObjects = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?object
+        SELECT ?type
         WHERE {
-        ?object rdf:type ?type .
+        ?s rdf:type ?type.
         }
         """
         df_sparql_getAllCulturalHeritageObjects = get(endpoint, query_getAllCulturalHeritageObjects, True)
         return df_sparql_getAllCulturalHeritageObjects
 
 
-    def getAuthorsOfCulturalHeritageObject(self, objectId: str):
+    def getAuthorsOfCulturalHeritageObject(self):
         endpoint = self.getDbPathOrUrl()
-        query_getAuthorsOfCulturalHeritageObject = """
+        query_getAuthorsOfCulturalHeritageObject = """"
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
         SELECT ?authorId ?authorName
         WHERE {
-        ?object schema:identifier '%s'.
+        ?object schema:identifier '%i'.
         ?object schema:author ?author .
         ?author schema:identifier ?authorId.
         ?author schema:name ?authorName .
         }
 
-        """%(objectId)
+        """
         df_sparql_getAuthorsOfCulturalHeritageObject = get(endpoint, query_getAuthorsOfCulturalHeritageObject, True)
         return df_sparql_getAuthorsOfCulturalHeritageObject
 
 
 
-    def getCulturalHeritageObjectsAuthoredBy(self, personId: str):        
+    def getCulturalHeritageObjectsAuthoredBy(self):         # PROBLEMSSSSSSSSSSSSSSSSSSS 
         endpoint = self.getDbPathOrUrl()
-        query_getCulturalHeritageObjectsAuthoredBy = """
+        query_getCulturalHeritageObjectsAuthoredBy = """"
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?type 
+        SELECT ?type ?title
         WHERE {
-        ?author schema:identifier '%s'.
+        ?author schema:identifier '%i'.
         ?object schema:author ?author .
         ?object rdf:type ?type.
+        ?object schema:title ?title.
+
         }
-        """%(personId) #needs to be inside " "
+        """
 
         df_sparql_getCulturalHeritageObjectsAuthoredBy = get(endpoint, query_getCulturalHeritageObjectsAuthoredBy, True)
         return df_sparql_getCulturalHeritageObjectsAuthoredBy
-    
 
