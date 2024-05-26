@@ -115,9 +115,21 @@ class ProcessDataQueryHandler(QueryHandler):
             return df_union
 
     def getActivitiesByResponsibleInstitutions(self, partialName):
-        df_activities = self.getAllActivities()
-        df = df_activities[df_activities["responsible institute"].str.contains(partialName, na=False, case=False)].reset_index(drop=True)
-        return df     
+        with connect(self.getDbPathOrUrl()) as con:
+            q1 = 'SELECT * FROM Acquisition WHERE "responsible insitute" LIKE ?;'
+            df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
+            q2 = 'SELECT * FROM Processing WHERE "responsible insitute" LIKE ?;'
+            df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
+            q3 = 'SELECT * FROM Modelling WHERE "responsible insitute" LIKE ?;'
+            df_m = pd.read_sql(q3, con, params=(f"%{partialName}%",))
+            q4 = 'SELECT * FROM Optimizing WHERE "responsible insitute" LIKE ?;'
+            df_o = pd.read_sql(q4, con, params=(f"%{partialName}%",))
+            q5 = 'SELECT * FROM Exporting WHERE "responsible insitute" LIKE ?;'
+            df_e = pd.read_sql(q5, con, params=(f"%{partialName}%",))
+
+            union_list = [df_a, df_p, df_m, df_o, df_e]
+            df_union = pd.concat(union_list, ignore_index=True)
+            return df_union    
     
     def getActivitiesByResponsiblePerson(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
@@ -138,10 +150,6 @@ class ProcessDataQueryHandler(QueryHandler):
 
 
     def getActivitiesUsingTool(self, partialName):
-        df_activities = self.getAllActivities()
-        df = df_activities[df_activities["tool"].str.contains(partialName, na=False, case=False)].reset_index(drop=True)
-        return df 
-        '''
         with connect(self.getDbPathOrUrl()) as con:
             q1 = 'SELECT * FROM Acquisition WHERE "tool" LIKE ?;'
             df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
@@ -157,7 +165,6 @@ class ProcessDataQueryHandler(QueryHandler):
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
-        '''
   
     def getActivitiesStartedAfter(self, date):
         with connect(self.getDbPathOrUrl()) as con:
