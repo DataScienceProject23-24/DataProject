@@ -18,10 +18,11 @@ class BasicMashup(object):  #combining the results coming from different handler
     
     def addMetadataHandler(self, metadataHandler): #it append one object in the list?
         self.metadataQuery.append(metadataHandler)   
-
+        return True
     
     def addProcessHandler(self, processHandler):
-        self.processQuery.append(processHandler)   
+        self.processQuery.append(processHandler)
+        return True  
 
 mashup= BasicMashup()
 
