@@ -1,12 +1,12 @@
 import pandas as pd
 from pandas import concat
 from pprint import pprint
-from HandlerComplete import  Handler, MetadataQueryHandler, ProcessDataQueryHandler
-from ClassesComplete import CulturalHeritageObject, Activity
+from HandlerComplete import  Handler, MetadataUploadHandler, ProcessDataUploadHandler, MetadataQueryHandler, ProcessDataQueryHandler
+from ClassesComplete import NauticalChart, ManuscriptPlate, ManuscriptVolume, PrintedVolume, PrintedMaterial, Herbarium, Specimen, Painting, Model, Map, Acquisition, Processing, Modelling, Optimising, Exporting
 
 
 class BasicMashup(object):  #combining the results coming from different handlers
-    def _init__(self):
+    def __init__(self):
         self.metadataQuery = []  #list of objects (handlers) of MetadataQueryHandler
         self.processQuery = [] #list of objects ProcessDataQueryHandler
 
@@ -32,128 +32,159 @@ class BasicMashup(object):  #combining the results coming from different handler
         for _, row in df.iterrows():
 
             if row["Type"] == "Nautical chart":
-                object = CulturalHeritageObject.NauticalChart(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                object = NauticalChart(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                 result.append(object)
 
             elif row["Type"] == "Manuscript plate":
-                object = CulturalHeritageObject.ManuscriptPlate(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])    
+                object = ManuscriptPlate(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])    
                 result.append(object) 
 
             elif row["Type"] == "Manuscript volume":
-                object =  CulturalHeritageObject.ManuscriptVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                object = ManuscriptVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                 result.append(object)
 
             elif row["Type"] == "Printed volume":
-                object = CulturalHeritageObject.PrintedVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                object = PrintedVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                 result.append(object)
 
             elif row["Type"] == "Printed material":
-                object = CulturalHeritageObject.PrintedMaterial(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                object = PrintedMaterial(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                 result.append(object)
 
             elif row["Type"] == "Herbarium":
-                object = CulturalHeritageObject.Herbarium(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                object = Herbarium(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                 result.append(object)
 
             elif row["Type"] == "Specimen":
-                object = CulturalHeritageObject.Specimen(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                object = Specimen(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                 result.append(object)
 
             elif row["Type"] == "Painting":
-                object = CulturalHeritageObject.Painting(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                object = Painting(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                 result.append(object)
 
             elif row["Type"] == "Model":
-                object = CulturalHeritageObject.Model(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                object = Model(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                 result.append(object)
 
             elif row["Type"] == "Map":
-                object = CulturalHeritageObject.Map(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                object = Map(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                 result.append(object)    
 
             return result                                    
     
     def getAllActivities(self):
-        df = ProcessDataQueryHandler.getAllActivities(self)
+        
         result = []
-        for _, row in df.iterrows():
-            type, id = row["internalID"].split("-")
 
-            if type == "acquisition":
-                object = Activity.Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
-                result.append(object)
-
-            elif type == "processing":
-                object = Activity.Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)
+        for handler in self.processQuery:
+            df = handler.getAllActivities()
             
-            elif type == "modelling":
-                object = Activity.Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)
-            
-            elif type == "optimizing":
-                object = Activity.Optimizing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)
+            for _, row in df.iterrows():
+                type, id = row["internalId"].split("-")
 
-            elif type == "exporting":
-                object = Activity.Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)    
-            
-            return result
+                if type == "acquisition":
+                    object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
+                    result.append(str(object))
 
+                elif type == "processing":
+                    object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))
+                
+                elif type == "modelling":
+                    object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))
+                
+                elif type == "optimising":
+                    object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))
+
+                elif type == "exporting":
+                    object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))    
+                
+        return result   
 
     def getActivitiesByResponsibleInstitution(self, institution):
-        df = ProcessDataQueryHandler.getActivitiesByResponsibleInstitution(self, institution)
+        
         result = []
-        for _, row in df.iterrows():
-            type, id = row["internalID"].split("-")
 
-            if type == "acquisition":
-                object = Activity.Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
-                result.append(object)
+        for handler in self.processQuery:
+            df = handler.getActivitiesByResponsibleInstitution(institution)
 
-            elif type == "processing":
-                object = Activity.Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)
-            
-            elif type == "modelling":
-                object = Activity.Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)
-            
-            elif type == "optimizing":
-                object = Activity.Optimizing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)
+            for _, row in df.iterrows():
+                type, id = row["internalID"].split("-")
 
-            elif type == "exporting":
-                object = Activity.Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)    
-            
-            return result
+                if type == "acquisition":
+                    object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
+                    result.append(str(object))
+
+                elif type == "processing":
+                    object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))
+                
+                elif type == "modelling":
+                    object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))
+                elif type == "optimising":
+                    object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))
+
+                elif type == "exporting":
+                    object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))  
+                
+        return result
 
     def getActivitiesByResponsiblePerson(self, person):
-        df = pd.getActivitiesByResponsiblePerson(self, person)
+        df = ProcessDataQueryHandler.getActivitiesByResponsiblePerson(self, person)
         result = []
         for _, row in df.iterrows():
             type, id = row["internalID"].split("-")
 
             if type == "acquisition":
-                object = Activity.Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
+                object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
                 result.append(object)
 
             elif type == "processing":
-                object = Activity.Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
                 result.append(object)
             
             elif type == "modelling":
-                object = Activity.Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
                 result.append(object)
             
-            elif type == "optimizing":
-                object = Activity.Optimizing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+            elif type == "optimising":
+                object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
                 result.append(object)
 
             elif type == "exporting":
-                object = Activity.Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
                 result.append(object)    
             
             return result
+
+
+data = ProcessDataUploadHandler()
+data.setDbPathOrUrl("database.db")
+data.pushDataToDb("process.json")
+
+process_query_handler = ProcessDataQueryHandler()
+process_query_handler.setDbPathOrUrl("database.db")
+
+mashup = BasicMashup()
+mashup.addProcessHandler(process_query_handler)
+
+result_list = mashup.getActivitiesByResponsibleInstitution("Philology")
+pprint(result_list)
+
+#instance of MatadataQueryHandler
+#metadata_handler = MetadataQueryHandler()
+#metadata_handler.setDbPathOrUrl("")   #missing the path of database
+
+#add instance of MatadataQueryHandler to the BasicMashup
+#mashup.addMetadataHandler(metadata_handler)
+
+#instance of ProcessQueryHandler
+
+#mashup.addProcessHandler(process_handler)        
