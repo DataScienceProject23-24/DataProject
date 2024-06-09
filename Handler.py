@@ -315,7 +315,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
 
-    def getActivitiesByResponsibleInstitutions(self, partialName):
+    def getActivitiesByResponsibleInstitution(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = 'SELECT * FROM Acquisition WHERE "responsible insitute" LIKE ?;'
             df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
