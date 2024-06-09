@@ -227,15 +227,15 @@ data.pushDataToDb("process.json")
 query_handler = ProcessDataQueryHandler()        
 query_handler.setDbPathOrUrl("database.db")
 
-#df_activities = query_handler.getActivitiesByResponsiblePerson("Jane")
+df_activities = query_handler.getActivitiesByResponsiblePerson("Jane")
 #df_technique = query_handler.getAcquisitionsByTechnique("Photogrammetry")
 #df_activities_ended_before = query_handler.getActivitiesEndedBefore("2023-04-21")
-df_activities_started_after = query_handler.getActivitiesStartedAfter("2023-04-21")
+#df_activities_started_after = query_handler.getActivitiesStartedAfter("2023-04-21")
 
 
 #pprint(df_activities.to_dict())
 #pprint(df_technique.to_dict())
-pprint(df_activities_started_after.to_dict())
+print(df_activities)
 
 
          
