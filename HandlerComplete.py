@@ -317,15 +317,15 @@ class ProcessDataQueryHandler(QueryHandler):
 
     def getActivitiesByResponsibleInstitution(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
-            q1 = 'SELECT * FROM Acquisition WHERE "responsible insitute" LIKE ?;'
+            q1 = 'SELECT * FROM Acquisition WHERE "responsible institute" LIKE ?;'
             df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
-            q2 = 'SELECT * FROM Processing WHERE "responsible insitute" LIKE ?;'
+            q2 = 'SELECT * FROM Processing WHERE "responsible institute" LIKE ?;'
             df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
-            q3 = 'SELECT * FROM Modelling WHERE "responsible insitute" LIKE ?;'
+            q3 = 'SELECT * FROM Modelling WHERE "responsible institute" LIKE ?;'
             df_m = pd.read_sql(q3, con, params=(f"%{partialName}%",))
-            q4 = 'SELECT * FROM Optimising WHERE "responsible insitute" LIKE ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "responsible institute" LIKE ?;'
             df_o = pd.read_sql(q4, con, params=(f"%{partialName}%",))
-            q5 = 'SELECT * FROM Exporting WHERE "responsible insitute" LIKE ?;'
+            q5 = 'SELECT * FROM Exporting WHERE "responsible institute" LIKE ?;'
             df_e = pd.read_sql(q5, con, params=(f"%{partialName}%",))
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
@@ -419,3 +419,13 @@ class ProcessDataQueryHandler(QueryHandler):
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
+
+data = ProcessDataUploadHandler()
+data.setDbPathOrUrl("database.db")
+data.pushDataToDb("process.json")
+
+query_handler = ProcessDataQueryHandler()        
+query_handler.setDbPathOrUrl("database.db")
+
+df_activities = query_handler.getActivitiesByResponsibleInstitution("Philology")
+pprint(df_activities)        

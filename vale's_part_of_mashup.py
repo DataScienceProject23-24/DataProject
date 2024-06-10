@@ -113,7 +113,7 @@ class BasicMashup(object):  #combining the results coming from different handler
             df = handler.getActivitiesByResponsibleInstitution(institution)
 
             for _, row in df.iterrows():
-                type, id = row["internalID"].split("-")
+                type, id = row["internalId"].split("-")
 
                 if type == "acquisition":
                     object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])

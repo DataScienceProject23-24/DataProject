@@ -47,7 +47,9 @@ class ProcessDataUploadHandler(UploadHandler):
                 activity_id.append(col + "-" + str(idx))
             norm.insert(loc=0, column='internalId', value=internal_id)
             norm_df.append(norm)
-        
+
+        #print("Normalized dataframes:", [df.head() for df in norm_df])  # Debug print
+
         activities_df["activityId"] = activity_id
 
         
@@ -58,7 +60,8 @@ class ProcessDataUploadHandler(UploadHandler):
             norm_df[2].to_sql("Modelling", con, if_exists="replace", index=False)
             norm_df[3].to_sql("Optimising", con, if_exists="replace", index=False)
             norm_df[4].to_sql("Exporting", con, if_exists="replace", index=False)
-
+        
+        #print("Data pushed to database successfully")  # Debug print
         return True
 
 
@@ -116,15 +119,15 @@ class ProcessDataQueryHandler(QueryHandler):
 
     def getActivitiesByResponsibleInstitution(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
-            q1 = 'SELECT * FROM Acquisition WHERE "responsible insitute" LIKE ?;'
+            q1 = 'SELECT * FROM Acquisition WHERE "responsible institute" LIKE ?;'
             df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
-            q2 = 'SELECT * FROM Processing WHERE "responsible insitute" LIKE ?;'
+            q2 = 'SELECT * FROM Processing WHERE "responsible institute" LIKE ?;'
             df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
-            q3 = 'SELECT * FROM Modelling WHERE "responsible insitute" LIKE ?;'
+            q3 = 'SELECT * FROM Modelling WHERE "responsible institute" LIKE ?;'
             df_m = pd.read_sql(q3, con, params=(f"%{partialName}%",))
-            q4 = 'SELECT * FROM Optimising WHERE "responsible insitute" LIKE ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "responsible institute" LIKE ?;'
             df_o = pd.read_sql(q4, con, params=(f"%{partialName}%",))
-            q5 = 'SELECT * FROM Exporting WHERE "responsible insitute" LIKE ?;'
+            q5 = 'SELECT * FROM Exporting WHERE "responsible institute" LIKE ?;'
             df_e = pd.read_sql(q5, con, params=(f"%{partialName}%",))
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
@@ -227,7 +230,7 @@ data.pushDataToDb("process.json")
 query_handler = ProcessDataQueryHandler()        
 query_handler.setDbPathOrUrl("database.db")
 
-df_activities = query_handler.getActivitiesByResponsibleInstitution("Council")
+df_activities = query_handler.getActivitiesByResponsibleInstitution("Philology")
 #df_technique = query_handler.getAcquisitionsByTechnique("Photogrammetry")
 #df_activities_ended_before = query_handler.getActivitiesEndedBefore("2023-04-21")
 #df_activities_started_after = query_handler.getActivitiesStartedAfter("2023-04-21")
