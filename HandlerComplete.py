@@ -435,4 +435,4 @@ metadata_query_handler = MetadataQueryHandler()
 metadata_query_handler.setDbPathOrUrl("http://example.com/sparql")
 
 df_activities = metadata_query_handler.getAllCulturalHeritageObjects()
-pprint(df_activities)        
+#pprint(df_activities)        
