@@ -48,7 +48,6 @@ class ProcessDataUploadHandler(UploadHandler):
             norm.insert(loc=0, column='internalId', value=internal_id)
             norm_df.append(norm)
 
-        #print("Normalized dataframes:", [df.head() for df in norm_df])  # Debug print
 
         activities_df["activityId"] = activity_id
 
@@ -61,7 +60,6 @@ class ProcessDataUploadHandler(UploadHandler):
             norm_df[3].to_sql("Optimising", con, if_exists="replace", index=False)
             norm_df[4].to_sql("Exporting", con, if_exists="replace", index=False)
         
-        #print("Data pushed to database successfully")  # Debug print
         return True
 
 
@@ -230,7 +228,7 @@ data.pushDataToDb("process.json")
 query_handler = ProcessDataQueryHandler()        
 query_handler.setDbPathOrUrl("database.db")
 
-df_activities = query_handler.getActivitiesByResponsibleInstitution("Philology")
+df_activities = query_handler.getAllActivities()
 #df_technique = query_handler.getAcquisitionsByTechnique("Photogrammetry")
 #df_activities_ended_before = query_handler.getActivitiesEndedBefore("2023-04-21")
 #df_activities_started_after = query_handler.getActivitiesStartedAfter("2023-04-21")

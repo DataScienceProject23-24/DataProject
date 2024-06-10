@@ -27,51 +27,55 @@ class BasicMashup(object):  #combining the results coming from different handler
         return True
     
     def getCulturalHeritageObjectsAuthoredBy(self, authorId):
-        df = MetadataQueryHandler.getCulturalHeritageObjectsAuthoredBy(self, authorId)
+
         result = []
-        for _, row in df.iterrows():
 
-            if row["Type"] == "Nautical chart":
-                object = NauticalChart(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                result.append(object)
+        for handler in self.metadataQuery:
+            df = handler.getCulturalHeritageObjectsAuthoredBy(authorId) 
 
-            elif row["Type"] == "Manuscript plate":
-                object = ManuscriptPlate(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])    
-                result.append(object) 
+            for _, row in df.iterrows():
 
-            elif row["Type"] == "Manuscript volume":
-                object = ManuscriptVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                result.append(object)
+                if row["Type"] == "Nautical chart":
+                    object = NauticalChart(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    result.append(object)
 
-            elif row["Type"] == "Printed volume":
-                object = PrintedVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                result.append(object)
+                elif row["Type"] == "Manuscript plate":
+                    object = ManuscriptPlate(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])    
+                    result.append(object) 
 
-            elif row["Type"] == "Printed material":
-                object = PrintedMaterial(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                result.append(object)
+                elif row["Type"] == "Manuscript volume":
+                    object = ManuscriptVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    result.append(object)
 
-            elif row["Type"] == "Herbarium":
-                object = Herbarium(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                result.append(object)
+                elif row["Type"] == "Printed volume":
+                    object = PrintedVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    result.append(object)
 
-            elif row["Type"] == "Specimen":
-                object = Specimen(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                result.append(object)
+                elif row["Type"] == "Printed material":
+                    object = PrintedMaterial(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    result.append(object)
 
-            elif row["Type"] == "Painting":
-                object = Painting(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                result.append(object)
+                elif row["Type"] == "Herbarium":
+                    object = Herbarium(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    result.append(object)
 
-            elif row["Type"] == "Model":
-                object = Model(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                result.append(object)
+                elif row["Type"] == "Specimen":
+                    object = Specimen(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    result.append(object)
 
-            elif row["Type"] == "Map":
-                object = Map(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                result.append(object)    
+                elif row["Type"] == "Painting":
+                    object = Painting(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    result.append(object)
 
-            return result                                    
+                elif row["Type"] == "Model":
+                    object = Model(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    result.append(object)
+
+                elif row["Type"] == "Map":
+                    object = Map(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    result.append(object)    
+
+        return result                                    
     
     def getAllActivities(self):
         
@@ -137,32 +141,36 @@ class BasicMashup(object):  #combining the results coming from different handler
         return result
 
     def getActivitiesByResponsiblePerson(self, person):
-        df = ProcessDataQueryHandler.getActivitiesByResponsiblePerson(self, person)
+        
         result = []
-        for _, row in df.iterrows():
-            type, id = row["internalID"].split("-")
 
-            if type == "acquisition":
-                object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
-                result.append(object)
+        for handler in self.processQuery:
+            df = handler.getActivitiesByResponsiblePerson(person)
 
-            elif type == "processing":
-                object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)
-            
-            elif type == "modelling":
-                object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)
-            
-            elif type == "optimising":
-                object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)
+            for _, row in df.iterrows():
+                type, id = row["internalId"].split("-")
 
-            elif type == "exporting":
-                object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                result.append(object)    
+                if type == "acquisition":
+                    object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
+                    result.append(str(object))
+
+                elif type == "processing":
+                    object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))
+                
+                elif type == "modelling":
+                    object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))
+                
+                elif type == "optimising":
+                    object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))
+
+                elif type == "exporting":
+                    object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
+                    result.append(str(object))    
             
-            return result
+        return result
 
 
 data = ProcessDataUploadHandler()
@@ -172,11 +180,18 @@ data.pushDataToDb("process.json")
 process_query_handler = ProcessDataQueryHandler()
 process_query_handler.setDbPathOrUrl("database.db")
 
-mashup = BasicMashup()
-mashup.addProcessHandler(process_query_handler)
+data2 = MetadataUploadHandler()
+data2.setDbPathOrUrl("http://example.com/sparql")
+data2.pushDataToDb("meta.csv")
 
-result_list = mashup.getActivitiesByResponsibleInstitution("Philology")
-pprint(result_list)
+metadata_query_handler = MetadataQueryHandler()
+metadata_query_handler.setDbPathOrUrl("http://example.com/sparql")
+
+mashup = BasicMashup()
+mashup.addMetadataHandler(metadata_query_handler)
+
+result_list = mashup.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874")
+#pprint(result_list)
 
 #instance of MatadataQueryHandler
 #metadata_handler = MetadataQueryHandler()
