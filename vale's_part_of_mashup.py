@@ -185,7 +185,7 @@ data2.setDbPathOrUrl("http://example.com/sparql")
 data2.pushDataToDb("meta.csv")
 
 metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://example.com/sparql")
+metadata_query_handler.setDbPathOrUrl("http://10.201.29.7:9999/blazegraph/")
 
 mashup = BasicMashup()
 mashup.addMetadataHandler(metadata_query_handler)
