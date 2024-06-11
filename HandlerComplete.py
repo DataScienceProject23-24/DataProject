@@ -427,12 +427,5 @@ data.pushDataToDb("process.json")
 query_handler = ProcessDataQueryHandler()        
 query_handler.setDbPathOrUrl("database.db")
 
-data2 = MetadataUploadHandler()
-data2.setDbPathOrUrl("http://10.201.17.80:9999/blazegraph/")
-data2.pushDataToDb("meta.csv")
-
-metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://10.201.17.80:9999/blazegraph/")
-
-df_activities = metadata_query_handler.getAllCulturalHeritageObjects()
-pprint(df_activities)        
+#df_activities = query_handler.getAllCulturalHeritageObjects()
+#pprint(df_activities)        
