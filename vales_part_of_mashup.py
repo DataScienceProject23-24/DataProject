@@ -181,7 +181,7 @@ process_query_handler = ProcessDataQueryHandler()
 process_query_handler.setDbPathOrUrl("database.db")
 
 data2 = MetadataUploadHandler()
-data2.setDbPathOrUrl("http://example.com/sparql")
+data2.setDbPathOrUrl("http://10.201.17.80:9999/blazegraph/")
 data2.pushDataToDb("meta.csv")
 
 metadata_query_handler = MetadataQueryHandler()
@@ -191,7 +191,7 @@ mashup = BasicMashup()
 mashup.addMetadataHandler(metadata_query_handler)
 
 result_list = mashup.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874")
-#pprint(result_list)
+pprint(result_list)
 
 #instance of MatadataQueryHandler
 #metadata_handler = MetadataQueryHandler()
