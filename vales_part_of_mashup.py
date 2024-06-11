@@ -185,12 +185,12 @@ data2.setDbPathOrUrl("http://10.201.17.80:9999/blazegraph/")
 data2.pushDataToDb("meta.csv")
 
 metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://10.201.29.7:9999/blazegraph/")
+metadata_query_handler.setDbPathOrUrl("http://10.201.17.80:9999/blazegraph/")
 
 mashup = BasicMashup()
-mashup.addMetadataHandler(metadata_query_handler)
+mashup.addProcessHandler(process_query_handler)
 
-result_list = mashup.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874")
+result_list = mashup.getAllActivities()
 pprint(result_list)
 
 #instance of MatadataQueryHandler
