@@ -434,7 +434,7 @@ data2.pushDataToDb("meta.csv")
 
 metadata_query_handler = MetadataQueryHandler()
 metadata_query_handler.setDbPathOrUrl("http://10.201.3.91:9999/blazegraph/sparql")
-#print(metadata_query_handler.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874"))
+#pprint(metadata_query_handler.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874"))
 
 #df_activities = query_handler.getAllCulturalHeritageObjects()
 #pprint(df_activities)        

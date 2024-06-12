@@ -35,43 +35,45 @@ class BasicMashup(object):  #combining the results coming from different handler
 
             for _, row in df.iterrows():
 
-                if row["Type"] == "Nautical chart":
+                type = row["type"]
+
+                if "NauticalChart" in type:
                     object = NauticalChart(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                     result.append(object)
 
-                elif row["Type"] == "Manuscript plate":
+                elif "ManuscriptPlate" in type:
                     object = ManuscriptPlate(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])    
                     result.append(object) 
 
-                elif row["Type"] == "Manuscript volume":
+                elif "ManuscriptVolume" in type:
                     object = ManuscriptVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                     result.append(object)
 
-                elif row["Type"] == "Printed volume":
+                elif "PrintedVolume" in type:
                     object = PrintedVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                     result.append(object)
 
-                elif row["Type"] == "Printed material":
+                elif "PrintedMaterial" in type:
                     object = PrintedMaterial(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                     result.append(object)
 
-                elif row["Type"] == "Herbarium":
+                elif "Herbarium" in type:
                     object = Herbarium(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                     result.append(object)
 
-                elif row["Type"] == "Specimen":
+                elif "Specimen" in type:
                     object = Specimen(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                     result.append(object)
 
-                elif row["Type"] == "Painting":
+                elif "Painting" in type:
                     object = Painting(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                     result.append(object)
 
-                elif row["Type"] == "Model":
+                elif "Model" in type:
                     object = Model(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                     result.append(object)
 
-                elif row["Type"] == "Map":
+                elif "Map" in type:
                     object = Map(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
                     result.append(object)    
 
