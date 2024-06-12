@@ -283,11 +283,16 @@ class MetadataQueryHandler(QueryHandler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?type 
+        SELECT ?type ?title ?date ?owner ?place ?hasAuthor
         WHERE {
         ?author schema:identifier '%s'.
         ?object schema:author ?author .
         ?object rdf:type ?type.
+        ?object schema:title ?title.
+        ?object schema:dateCreated ?date.
+        ?object schema:acquiredFrom ?owner.
+        ?object schema:location ?place. 
+        ?object schema:author ?hasAuthor.
         }
         """%(personId) #needs to be inside " "
 

@@ -35,46 +35,46 @@ class BasicMashup(object):  #combining the results coming from different handler
 
             for _, row in df.iterrows():
 
-                type = row["type"]
+                type = row['type']
 
                 if "NauticalChart" in type:
-                    object = NauticalChart(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = NauticalChart(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "ManuscriptPlate" in type:
-                    object = ManuscriptPlate(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])    
+                    object = ManuscriptPlate(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])    
                     result.append(object) 
 
                 elif "ManuscriptVolume" in type:
-                    object = ManuscriptVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = ManuscriptVolume(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "PrintedVolume" in type:
-                    object = PrintedVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = PrintedVolume(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "PrintedMaterial" in type:
-                    object = PrintedMaterial(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = PrintedMaterial(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Herbarium" in type:
-                    object = Herbarium(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Herbarium(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Specimen" in type:
-                    object = Specimen(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Specimen(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Painting" in type:
-                    object = Painting(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Painting(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Model" in type:
-                    object = Model(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Model(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Map" in type:
-                    object = Map(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Map(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)    
 
         return result                                    
@@ -194,7 +194,7 @@ mashup = BasicMashup()
 mashup.addMetadataHandler(metadata_query_handler)
 
 result_list = mashup.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874")
-#pprint(result_list)
+pprint(result_list)
 
 #instance of MatadataQueryHandler
 #metadata_handler = MetadataQueryHandler()
