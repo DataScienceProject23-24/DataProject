@@ -5,7 +5,7 @@ from Handler import MetadataUploadHandler, ProcessDataUploadHandler, MetadataQue
 from DataModelClasses import Person, CulturalHeritageObject, Activity, Acquisition, Processing, Modelling, Optimizing, Exporting
 
 class BasicMashup(object):
-    def _init__(self):
+    def __init__(self):
         self.metadataQuery = []  #list of objects (handlers) of MetadataQueryHandler
         self.processQuery = [] #list of objects ProcessDataQueryHandler
 
@@ -101,3 +101,25 @@ class BasicMashup(object):
             entry = Acquisition(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"],row["technique"])
             list_acquisitions.append(entry)
         return list_acquisitions
+
+
+    def getAllPeople(self):
+        result = []
+        for query in self.metadataQuery:
+            df = query.getAllPeople()
+
+            for _, row in df.iterrows():
+                object = Person(name = row['authorName'])
+                result.append(object)
+        return(result)
+    
+u = MetadataUploadHandler()
+endpoint = "http://10.201.15.160:9999/blazegraph/sparql"
+path = r"C:\Users\annap\Documents\GitHub\DataProject\resources\meta.csv"
+u.setDbPathOrUrl(endpoint)
+u.pushDataToDb(path)
+q = MetadataQueryHandler()
+q.setDbPathOrUrl(endpoint)
+bm = BasicMashup()
+bm.addMetadataHandler(q)
+print(bm.getAllPeople())
