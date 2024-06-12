@@ -4,6 +4,7 @@ from sqlite3 import connect
 from rdflib.plugins.stores.sparqlstore import SPARQLUpdateStore
 from sparql_dataframe import get
 from pprint import pprint
+from DataModelClasses import Person
 
 class Handler(object):
     def __init__(self):
@@ -422,3 +423,51 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
         
+class BasicMashup(object):
+    def __init__(self):
+        self.metadataQuery = []  #list of objects (handlers) of MetadataQueryHandler
+        self.processQuery = [] #list of objects ProcessDataQueryHandler
+
+    def cleanMetadataHandlers(self):
+        self.metadataQuery = [] #clean the list metadataQuery
+        return True
+    
+    def cleanProcessHandlers(self):
+        self.processQuery = [] #clean the list processQuery
+        return True
+    
+    def addMetadataHandler(self, metadataHandler): #it append one object in the list?
+        self.metadataQuery.append(metadataHandler)   
+        return True
+    
+    def addProcessHandler(self, processHandler):
+        self.processQuery.append(processHandler)
+        return True 
+    
+
+    def getAllPeople(self):
+        result = []
+        for query in self.metadataQuery:
+            df = query.getAllPeople()
+            for _, row in df.iterrows():
+                person = Person(name=row['authorName'])
+                result.append(person)
+        
+        return result
+
+
+
+
+metadata_handler = MetadataQueryHandler()
+metadata_handler.setDbPathOrUrl("http://192.168.194.161:9999/blazegraph/sparql")
+
+mashup = BasicMashup()
+mashup.addMetadataHandler(metadata_handler)
+
+# Get and print all people
+people = mashup.getAllPeople()
+print(people)
+
+
+
+#java -server -Xmx1g -jar blazegraph.jar
