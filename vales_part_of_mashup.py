@@ -121,22 +121,22 @@ class BasicMashup(object):  #combining the results coming from different handler
 
                 if type == "acquisition":
                     object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
-                    result.append(str(object))
+                    result.append(object)
 
                 elif type == "processing":
                     object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                    result.append(str(object))
+                    result.append(object)
                 
                 elif type == "modelling":
                     object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                    result.append(str(object))
+                    result.append(object)
                 elif type == "optimising":
                     object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                    result.append(str(object))
+                    result.append(object)
 
                 elif type == "exporting":
                     object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                    result.append(str(object))  
+                    result.append(object)  
                 
         return result
 
@@ -152,40 +152,46 @@ class BasicMashup(object):  #combining the results coming from different handler
 
                 if type == "acquisition":
                     object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'], technique=row['technique'])
-                    result.append(str(object))
+                    result.append(object)
 
                 elif type == "processing":
                     object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                    result.append(str(object))
+                    result.append(object)
                 
                 elif type == "modelling":
                     object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                    result.append(str(object))
+                    result.append(object)
                 
                 elif type == "optimising":
                     object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                    result.append(str(object))
+                    result.append(object)
 
                 elif type == "exporting":
                     object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=row['objectId'])
-                    result.append(str(object))    
+                    result.append(object)    
             
         return result
 
-
+'''
 data = ProcessDataUploadHandler()
 data.setDbPathOrUrl("database.db")
 data.pushDataToDb("process.json")
 
 process_query_handler = ProcessDataQueryHandler()
 process_query_handler.setDbPathOrUrl("database.db")
+'''
+
+data2 = MetadataUploadHandler()
+data2.setDbPathOrUrl("http://10.201.3.91:9999/blazegraph/sparql")
+data2.pushDataToDb("meta.csv")
+
+metadata_query_handler = MetadataQueryHandler()
+metadata_query_handler.setDbPathOrUrl("http://10.201.3.91:9999/blazegraph/sparql")  
 
 mashup = BasicMashup()
-mashup.addProcessHandler(process_query_handler)
+mashup.addMetadataHandler(metadata_query_handler)
 
-pprint(mashup.processQuery)
-
-#result_list = mashup.getAllActivities()
+result_list = mashup.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874")
 #pprint(result_list)
 
 #instance of MatadataQueryHandler

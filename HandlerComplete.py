@@ -419,13 +419,22 @@ class ProcessDataQueryHandler(QueryHandler):
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
-
+'''
 data = ProcessDataUploadHandler()
 data.setDbPathOrUrl("database.db")
 data.pushDataToDb("process.json")
 
 query_handler = ProcessDataQueryHandler()        
 query_handler.setDbPathOrUrl("database.db")
+'''
+
+data2 = MetadataUploadHandler()
+data2.setDbPathOrUrl("http://10.201.3.91:9999/blazegraph/sparql")
+data2.pushDataToDb("meta.csv")
+
+metadata_query_handler = MetadataQueryHandler()
+metadata_query_handler.setDbPathOrUrl("http://10.201.3.91:9999/blazegraph/sparql")
+#print(metadata_query_handler.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874"))
 
 #df_activities = query_handler.getAllCulturalHeritageObjects()
 #pprint(df_activities)        
