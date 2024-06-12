@@ -113,36 +113,15 @@ class Acquisition(Activity):
         
     def getTechnique(self):
         return self.technique
-    
-    def __str__(self):
-        return (f"Acquisition by {self.institute} (Person: {self.person}, Tools: {self.tool}, "
-                f"Start: {self.start}, End: {self.end}, Refers to: {self.refers_to}, Technique: {self.technique})")
 
 class Processing(Activity):
     pass
     
-    def __str__(self):
-        return (f"Processing by {self.institute} (Person: {self.person}, Tools: {self.tool}, "
-                f"Start: {self.start}, End: {self.end}, Refers to: {self.refers_to})")
-
 class Modelling(Activity):
     pass
-
-    def __str__(self):
-        return (f"Modelling by {self.institute} (Person: {self.person}, Tools: {self.tool}, "
-                f"Start: {self.start}, End: {self.end}, Refers to: {self.refers_to})")
-
 
 class Optimising(Activity):
     pass
 
-    def __str__(self):
-        return (f"Optimising by {self.institute} (Person: {self.person}, Tools: {self.tool}, "
-                f"Start: {self.start}, End: {self.end}, Refers to: {self.refers_to})")
-
 class Exporting(Activity):
     pass
-    
-    def __str__(self):
-        return (f"Exporting by {self.institute} (Person: {self.person}, Tools: {self.tool}, "
-                f"Start: {self.start}, End: {self.end}, Refers to: {self.refers_to})")
