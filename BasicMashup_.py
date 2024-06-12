@@ -5,7 +5,7 @@ from Handler import MetadataUploadHandler, ProcessDataUploadHandler, MetadataQue
 from DataModelClasses import Person, CulturalHeritageObject, Activity, Acquisition, Processing, Modelling, Optimizing, Exporting
 
 class BasicMashup(object):
-    def _init__(self):
+    def __init__(self):
         self.metadataQuery = []  #list of objects (handlers) of MetadataQueryHandler
         self.processQuery = [] #list of objects ProcessDataQueryHandler
 

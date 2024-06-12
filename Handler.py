@@ -188,7 +188,7 @@ class QueryHandler(Handler):
         super().__init__()
     def getById(self, id: str):
         endpoint = self.getDbPathOrUrl()
-        query = """
+        query_objectId = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
@@ -211,7 +211,25 @@ class QueryHandler(Handler):
             }
         }
         """%(id)
-        df_entity = get(endpoint, query, True)
+
+        query_personId ="""
+        PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX schema: <https://schema.org/>
+
+        SELECT ?id ?authorName
+        WHERE
+        {
+        SELECT* WHERE{
+            ?id schema:identifier '%s'.
+            ?id schema:name ?authorName   
+            }
+        }
+        """%(id)
+        if id.isalnum():
+            df_entity = get(endpoint, query_personId, True)
+        elif id.isnumeric():
+            df_entity = get(endpoint, query_objectId, True)
         return df_entity
 
 
