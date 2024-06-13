@@ -4,6 +4,8 @@ from pprint import pprint
 from Handler import MetadataUploadHandler, ProcessDataUploadHandler, MetadataQueryHandler, ProcessDataQueryHandler
 from DataModelClasses import Person, CulturalHeritageObject, Activity, Acquisition, Processing, Modelling, Optimizing, Exporting, NauticalChart, ManuscriptPlate, ManuscriptVolume, PrintedVolume, PrintedMaterial, Herbarium, Specimen, Painting, Model, Map
 
+
+
 class BasicMashup(object):
     def __init__(self):
         self.metadataQuery = []  #list of objects (handlers) of MetadataQueryHandler
@@ -111,7 +113,7 @@ class BasicMashup(object):
             for _, row in df.iterrows():
                 object = Person(name = row['authorName'])
                 result.append(object)
-        return(result)
+        return result
     
     def getAllCulturalHeritageObjects(self):
         result = []
@@ -119,105 +121,106 @@ class BasicMashup(object):
             df = query.getAllCulturalHeritageObjects()
 
             for _, row in df.iterrows():
+                type = row['type']
                 if "NauticalChart" in type:
-                    object = NauticalChart(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = NauticalChart(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "ManuscriptPlate" in type:
-                    object = ManuscriptPlate(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])    
+                    object = ManuscriptPlate(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])    
                     result.append(object) 
 
                 elif "ManuscriptVolume" in type:
-                    object = ManuscriptVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = ManuscriptVolume(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "PrintedVolume" in type:
-                    object = PrintedVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = PrintedVolume(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "PrintedMaterial" in type:
-                    object = PrintedMaterial(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = PrintedMaterial(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Herbarium" in type:
-                    object = Herbarium(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Herbarium(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Specimen" in type:
-                    object = Specimen(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Specimen(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Painting" in type:
-                    object = Painting(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Painting(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Model" in type:
-                    object = Model(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Model(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
 
                 elif "Map" in type:
-                    object = Map(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
+                    object = Map(title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
                     result.append(object)
-                
-                result.append(object)
-        return(result)
+        return result
 
 
-    def getEntityById(self, id):
-        result = []
+    def getEntityById(self, id): 
         for query in self.metadataQuery:
             df = query.getById(id)
+
+            if df.empty:
+                continue
 
             for _,row in df.iterrows():
                 if "authorName" in df.columns:
                     author = row['authorName']
                     if author != "NaN":
-                        object = Person(name = row['authorName'])
-                        result.append(object)
+                        return Person(id=id, name = row['authorName'])
+                               
                 else:
                     type = row["type"]
+                    authors = row['authorName'].split(";") if "authorName" in row and row['authorName'] else []
 
                     if "NauticalChart" in type:
-                        object = NauticalChart(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                        result.append(object)
+                        return NauticalChart(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
+                        
 
                     elif "ManuscriptPlate" in type:
-                        object = ManuscriptPlate(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])    
-                        result.append(object) 
+                        return ManuscriptPlate(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])    
+                        
 
                     elif "ManuscriptVolume" in type:
-                        object = ManuscriptVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                        result.append(object)
+                        return ManuscriptVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
+                        
 
                     elif "PrintedVolume" in type:
-                        object = PrintedVolume(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                        result.append(object)
+                        return PrintedVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
+                        
 
                     elif "PrintedMaterial" in type:
-                        object = PrintedMaterial(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                        result.append(object)
+                        return PrintedMaterial(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
+                        
 
                     elif "Herbarium" in type:
-                        object = Herbarium(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                        result.append(object)
+                        return Herbarium(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
+                        
 
                     elif "Specimen" in type:
-                        object = Specimen(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                        result.append(object)
+                        return  Specimen(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
+                        
 
                     elif "Painting" in type:
-                        object = Painting(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                        result.append(object)
+                        return Painting(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
+                        
 
                     elif "Model" in type:
-                        object = Model(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                        result.append(object)
+                        return Model(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
+                        
 
                     elif "Map" in type:
-                        object = Map(title=row['Title'], date=row['Date'], owner=row['Owner'], place=row['Place'], authos=row['Authors'])
-                        result.append(object)
-        return(result)
-                
+                        return Map(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['hasAuthor'])
+                   
+                  
     
 
     def getAuthorsOfCulturalHeritageObject(self, id):
@@ -232,13 +235,13 @@ class BasicMashup(object):
                     result.append(object)   
                 else:
                     return(None)
-        return(result)
+        return result
 
 
 
     
 u = MetadataUploadHandler()
-endpoint = "http://10.201.15.160:9999/blazegraph/sparql"
+endpoint = " http://192.168.194.161:9999/blazegraph/sparql" #
 path = r"C:\Users\annap\Documents\GitHub\DataProject\resources\meta.csv"
 u.setDbPathOrUrl(endpoint)
 u.pushDataToDb(path)
@@ -246,4 +249,15 @@ q = MetadataQueryHandler()
 q.setDbPathOrUrl(endpoint)
 bm = BasicMashup()
 bm.addMetadataHandler(q)
-#print(bm.getAllCulturalHeritageObjects())
+
+#print(bm.getAllPeople()) --> it works!
+#print(bm.getAllCulturalHeritageObjects()) --> it works!!
+#print(bm.getAuthorsOfCulturalHeritageObject("...")) --> it works!!!
+
+# DON'T WORK
+#print(bm.getEntityById("ULAN:500114874")) --> cannot access local variable 'df_entity' where it is not associated with a value
+#print(bm.getEntityById('1')) --> NONE ???
+
+
+
+
