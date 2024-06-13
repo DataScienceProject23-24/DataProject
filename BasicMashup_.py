@@ -112,14 +112,5 @@ class BasicMashup(object):
                 object = Person(name = row['authorName'])
                 result.append(object)
         return(result)
-    
-u = MetadataUploadHandler()
-endpoint = "http://10.201.15.160:9999/blazegraph/sparql"
-path = r"C:\Users\annap\Documents\GitHub\DataProject\resources\meta.csv"
-u.setDbPathOrUrl(endpoint)
-u.pushDataToDb(path)
-q = MetadataQueryHandler()
-q.setDbPathOrUrl(endpoint)
-bm = BasicMashup()
-bm.addMetadataHandler(q)
-print(bm.getAllPeople())
+
+

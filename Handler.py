@@ -230,6 +230,8 @@ class QueryHandler(Handler):
             df_entity = get(endpoint, query_personId, True)
         elif id.isnumeric():
             df_entity = get(endpoint, query_objectId, True)
+        else:
+            df_entity = pd.DataFrame()
         return df_entity
 
 
@@ -311,7 +313,7 @@ class MetadataQueryHandler(QueryHandler):
 
         SELECT ?type ?title ?data ?owner ?place ?hasAuthor
         WHERE {
-        ?author schema:identifier 'ULAN:500114874'.
+        ?author schema:identifier '%s'.
         ?object schema:author ?author .
         ?object rdf:type ?type.
         ?object schema:title ?title.
