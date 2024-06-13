@@ -230,6 +230,8 @@ class QueryHandler(Handler):
             df_entity = get(endpoint, query_personId, True)
         elif id.isnumeric():
             df_entity = get(endpoint, query_objectId, True)
+        else:
+            df_entity = pd.DataFrame()
         return df_entity
 
 
