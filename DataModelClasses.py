@@ -14,7 +14,7 @@ class Person(IdentifiableEntity):
 
 
 class CulturalHeritageObject(IdentifiableEntity):
-    def __init__(self, title, date, owner, place, authors):
+    def __init__(self, id, title, date, owner, place, authors):
         self.title = title
         self.date = date
         self.owner = owner
@@ -120,7 +120,7 @@ class Processing(Activity):
 class Modelling(Activity):
     pass
 
-class Optimizing(Activity):
+class Optimising(Activity):
     pass
 
 class Exporting(Activity):
