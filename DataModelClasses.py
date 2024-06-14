@@ -120,7 +120,7 @@ class Processing(Activity):
 class Modelling(Activity):
     pass
 
-class Optimizing(Activity):
+class Optimising(Activity):
     pass
 
 class Exporting(Activity):

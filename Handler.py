@@ -177,7 +177,7 @@ class ProcessDataUploadHandler(UploadHandler):
             norm_df[0].to_sql("Acquisition", con, if_exists="replace", index=False)
             norm_df[1].to_sql("Processing", con, if_exists="replace", index=False)
             norm_df[2].to_sql("Modelling", con, if_exists="replace", index=False)
-            norm_df[3].to_sql("Optimizing", con, if_exists="replace", index=False)
+            norm_df[3].to_sql("Optimising", con, if_exists="replace", index=False)
             norm_df[4].to_sql("Exporting", con, if_exists="replace", index=False)
 
         return True
@@ -193,19 +193,19 @@ class QueryHandler(Handler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?id ?type ?title ?date ?owner ?place ?authorName
+        SELECT ?id ?type ?Title ?Date ?Owner ?Place ?Authors
         WHERE
             {
             SELECT* WHERE{
             ?id schema:identifier '%s'.  
             VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
             ?id rdf:type ?type.
-            ?id schema:title ?title.
-            ?id schema:dateCreated ?date.
-            ?id schema:acquiredFrom ?owner.
-            ?id schema:location ?place.
+            ?id schema:title ?Title.
+            ?id schema:dateCreated ?Date.
+            ?id schema:acquiredFrom ?Owner.
+            ?id schema:location ?Place.
             OPTIONAL { SELECT * WHERE {
-              ?authorId schema:name ?authorName.
+              ?authorId schema:name ?Authors.
               ?id schema:author ?authorId.}
               }
             }
@@ -217,22 +217,27 @@ class QueryHandler(Handler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?id ?authorName
+        SELECT ?authorId ?authorName
         WHERE
         {
         SELECT* WHERE{
             ?id schema:identifier '%s'.
-            ?id schema:name ?authorName   
+            ?id schema:name ?authorName.
+            ?id schema:identifier ?authorId.   
             }
         }
         """%(id)
-        if id.isalnum():
-            df_entity = get(endpoint, query_personId, True)
-        elif id.isnumeric():
-            df_entity = get(endpoint, query_objectId, True)
+
+        df_object = get(endpoint, query_objectId, True)
+        df_person = get(endpoint, query_personId, True)
+
+        if df_object.empty == False:
+            return df_object
+        elif df_person.empty == False:
+            return df_person
         else:
             df_entity = pd.DataFrame()
-        return df_entity
+            return df_entity
 
 
 #  A N N A  #
@@ -339,7 +344,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_p = pd.read_sql(q2,con)
             q3 = "SELECT * FROM Modelling"
             df_m = pd.read_sql(q3,con)
-            q4 = "SELECT * FROM Optimizing"
+            q4 = "SELECT * FROM Optimising"
             df_o = pd.read_sql(q4,con)
             q5 = "SELECT * FROM Exporting"
             df_e = pd.read_sql(q5,con)
@@ -356,7 +361,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
             q3 = 'SELECT * FROM Modelling WHERE "responsible insitute" LIKE ?;'
             df_m = pd.read_sql(q3, con, params=(f"%{partialName}%",))
-            q4 = 'SELECT * FROM Optimizing WHERE "responsible insitute" LIKE ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "responsible insitute" LIKE ?;'
             df_o = pd.read_sql(q4, con, params=(f"%{partialName}%",))
             q5 = 'SELECT * FROM Exporting WHERE "responsible insitute" LIKE ?;'
             df_e = pd.read_sql(q5, con, params=(f"%{partialName}%",))
@@ -373,7 +378,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
             q3 = 'SELECT * FROM Modelling WHERE "responsible person" LIKE ?;'
             df_m = pd.read_sql(q3, con, params=(f"%{partialName}%",))
-            q4 = 'SELECT * FROM Optimizing WHERE "responsible person" LIKE ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "responsible person" LIKE ?;'
             df_o = pd.read_sql(q4, con, params=(f"%{partialName}%",))
             q5 = 'SELECT * FROM Exporting WHERE "responsible person" LIKE ?;'
             df_e = pd.read_sql(q5, con, params=(f"%{partialName}%",))
@@ -391,7 +396,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
             q3 = 'SELECT * FROM Modelling WHERE "tool" LIKE ?;'
             df_m = pd.read_sql(q3, con, params=(f"%{partialName}%",))
-            q4 = 'SELECT * FROM Optimizing WHERE "tool" LIKE ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "tool" LIKE ?;'
             df_o = pd.read_sql(q4, con, params=(f"%{partialName}%",))
             q5 = 'SELECT * FROM Exporting WHERE "tool" LIKE ?;'
             df_e = pd.read_sql(q5, con, params=(f"%{partialName}%",))
@@ -408,7 +413,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_p = pd.read_sql(q2, con, params=(date,))
             q3 = 'SELECT * FROM Modelling WHERE "start date" >= ?;'
             df_m = pd.read_sql(q3,con,params=(date,))
-            q4 = 'SELECT * FROM Optimizing WHERE "start date" >= ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "start date" >= ?;'
             df_o = pd.read_sql(q4,con,params=(date,))
             q5 = 'SELECT * FROM Exporting WHERE "start date" >= ?;'
             df_e = pd.read_sql(q5,con, params=(date,))
@@ -426,7 +431,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_p = pd.read_sql(q2, con, params=(date,))
             q3 = 'SELECT * FROM Modelling WHERE "end date" <= ?;'
             df_m = pd.read_sql(q3,con, params=(date,))
-            q4 = 'SELECT * FROM Optimizing WHERE "end date" <= ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "end date" <= ?;'
             df_o = pd.read_sql(q4,con, params=(date,))
             q5 = 'SELECT * FROM Exporting WHERE "end date" <= ?;'
             df_e = pd.read_sql(q5,con, params=(date,))
@@ -444,7 +449,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
             q3 = 'SELECT * FROM Modelling WHERE "technique" LIKE ?;'
             df_m = pd.read_sql(q3,con,params=(f"%{partialName}%",))
-            q4 = 'SELECT * FROM Optimizing WHERE "technique" LIKE ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "technique" LIKE ?;'
             df_o = pd.read_sql(q4,con, params=(f"%{partialName}%",))
             q5 = 'SELECT * FROM Exporting WHERE "technique" LIKE ?;'
             df_e = pd.read_sql(q5,con, params=(f"%{partialName}%",))
