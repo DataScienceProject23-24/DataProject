@@ -241,7 +241,7 @@ class BasicMashup(object):
 
     
 u = MetadataUploadHandler()
-endpoint = " http://192.168.194.161:9999/blazegraph/sparql" #
+endpoint = " http://192.168.194.161:9999/blazegraph/sparql" 
 path = r"C:\Users\annap\Documents\GitHub\DataProject\resources\meta.csv"
 u.setDbPathOrUrl(endpoint)
 u.pushDataToDb(path)
