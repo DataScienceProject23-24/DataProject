@@ -187,7 +187,7 @@ class AdvancedMashup(BasicMashup):
         for activity in activities:
             object_id = activity.refers_to
             for id in id_list:
-                object_reference = "object-"+str(id+1)
+                object_reference = "object-"+str(id-1)
                 if object_id == object_reference:
                     result_list.append(activity) 
         return result_list            
@@ -227,7 +227,7 @@ advanced_mashup.addMetadataHandler(metadata_query_handler)
 advanced_mashup.addProcessHandler(process_query_handler)
 
 resultlist = advanced_mashup.getActivitiesOnObjectsAuthoredBy("VIAF:78822798")
-pprint(resultlist)
+#pprint(resultlist)
 
 #instance of MatadataQueryHandler
 #metadata_handler = MetadataQueryHandler()

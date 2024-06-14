@@ -432,7 +432,7 @@ data.pushDataToDb("process.json")
 
 query_handler = ProcessDataQueryHandler()        
 query_handler.setDbPathOrUrl("database.db")
-#pprint(query_handler.getAllActivities())
+pprint(query_handler.getAllActivities())
 
 
 data2 = MetadataUploadHandler()
