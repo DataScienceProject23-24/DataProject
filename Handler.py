@@ -187,13 +187,13 @@ class QueryHandler(Handler):
     def __init__(self):
         super().__init__()
     def getById(self, id: str):
-        endpoint = self.getDbPathOrUrl()
+        endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
         query_objectId = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?id ?type ?Title ?Date ?Owner ?Place ?Authors
+        SELECT ?id ?type ?title ?date ?owner ?place ?Authors
         WHERE
             {
             SELECT* WHERE{
@@ -279,7 +279,7 @@ class MetadataQueryHandler(QueryHandler):
           ?object schema:dateCreated ?date.
           ?object schema:acquiredFrom ?owner.
           ?object schema:location ?place.
-          ?object schema:author ?hasAuthor.
+          ?object schema:author ?Authors.
        
         }
 
@@ -316,7 +316,7 @@ class MetadataQueryHandler(QueryHandler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?type ?id ?title ?date ?owner ?place ?hasAuthor
+        SELECT ?type ?title ?date ?owner ?place ?hasAuthor
         WHERE {
         ?author schema:identifier '%s'.
         ?object schema:author ?author .
@@ -326,7 +326,6 @@ class MetadataQueryHandler(QueryHandler):
         ?object schema:acquiredFrom ?owner.
         ?object schema:location ?place. 
         ?object schema:author ?hasAuthor.
-        ?object schema:identifier ?id.
         }
         """%(personId) #needs to be inside " "
 
@@ -458,5 +457,3 @@ class ProcessDataQueryHandler(QueryHandler):
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
-
-
