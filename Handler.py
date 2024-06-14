@@ -187,7 +187,7 @@ class QueryHandler(Handler):
     def __init__(self):
         super().__init__()
     def getById(self, id: str):
-        endpoint = self.getDbPathOrUrl()
+        endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
         query_objectId = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>

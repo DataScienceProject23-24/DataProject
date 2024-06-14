@@ -6,15 +6,16 @@ class IdentifiableEntity(object):
 
 
 class Person(IdentifiableEntity):
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, id, name):
         super().__init__(id)
+        self.name = name
     def getName(self):
         return self.name
 
 
 class CulturalHeritageObject(IdentifiableEntity):
-    def __init__(self, title, date, owner, place, authors):
+    def __init__(self, id, title, date, owner, place, authors):
+        super().__init__(id)
         self.title = title
         self.date = date
         self.owner = owner
@@ -23,9 +24,6 @@ class CulturalHeritageObject(IdentifiableEntity):
         for author in authors:
             self.hasAuthor.add(author)
 
-        super().__init__(id)
-
-    
     def getTitle(self):
         return self.title
     def getDate(self):
