@@ -283,7 +283,7 @@ class MetadataQueryHandler(QueryHandler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?type ?title ?date ?owner ?place ?hasAuthor
+        SELECT ?type ?id ?title ?date ?owner ?place ?hasAuthor
         WHERE {
         ?author schema:identifier '%s'.
         ?object schema:author ?author .
@@ -293,6 +293,7 @@ class MetadataQueryHandler(QueryHandler):
         ?object schema:acquiredFrom ?owner.
         ?object schema:location ?place. 
         ?object schema:author ?hasAuthor.
+        ?object schema:identifier ?id.
         }
         """%(personId) #needs to be inside " "
 
@@ -424,21 +425,22 @@ class ProcessDataQueryHandler(QueryHandler):
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
-'''
+
 data = ProcessDataUploadHandler()
 data.setDbPathOrUrl("database.db")
 data.pushDataToDb("process.json")
 
 query_handler = ProcessDataQueryHandler()        
 query_handler.setDbPathOrUrl("database.db")
-'''
+#pprint(query_handler.getAllActivities())
+
 
 data2 = MetadataUploadHandler()
-data2.setDbPathOrUrl("http://10.201.3.91:9999/blazegraph/sparql")
+data2.setDbPathOrUrl("http://10.201.11.223:9999/blazegraph/sparql")
 data2.pushDataToDb("meta.csv")
 
 metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://10.201.3.91:9999/blazegraph/sparql")
+metadata_query_handler.setDbPathOrUrl("http://10.201.11.223:9999/blazegraph/sparql")
 #pprint(metadata_query_handler.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874"))
 
 #df_activities = query_handler.getAllCulturalHeritageObjects()
