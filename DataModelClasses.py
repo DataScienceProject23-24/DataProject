@@ -22,7 +22,7 @@ class CulturalHeritageObject(IdentifiableEntity):
         self.hasAuthor = set()
         for author in authors:
             self.hasAuthor.add(author)
-        
+
         super().__init__(id)
 
     
