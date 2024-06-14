@@ -453,23 +453,4 @@ class BasicMashup(object):
 
 
 
-u=ProcessDataUploadHandler()
-uu = MetadataUploadHandler()
-grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
-path = r"C:\Users\user\Documents\GitHub\DataProject\resources\process.json"
-path_ = r"C:\Users\user\Documents\GitHub\DataProject\resources\meta.csv"
-u.setDbPathOrUrl("activities.db")
-u.pushDataToDb(path)
-uu.setDbPathOrUrl(grp_endpoint)
-uu.pushDataToDb(path_)
-q = ProcessDataQueryHandler()
-qq = MetadataQueryHandler()
-q.setDbPathOrUrl("activities.db")
-qq.setDbPathOrUrl(grp_endpoint)
-#print(qq.getById("VIAF:265397758"))
-bm = BasicMashup()
-#bm.cleanProcessHandlers()
-bm.addProcessHandler(q)
-bm.addMetadataHandler(qq)
-#print(bm.getAllPeople())
-print(bm.getEntityById("VIAF:265397758"))
+
