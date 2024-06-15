@@ -214,11 +214,11 @@ process_query_handler = ProcessDataQueryHandler()
 process_query_handler.setDbPathOrUrl("database.db")
 
 data2 = MetadataUploadHandler()
-data2.setDbPathOrUrl("http://10.201.11.223:9999/blazegraph/sparql")
+data2.setDbPathOrUrl("http://192.168.8.202:9999/blazegraph/sparql")
 data2.pushDataToDb("meta.csv")
 
 metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://10.201.11.223:9999/blazegraph/sparql") 
+metadata_query_handler.setDbPathOrUrl("http://192.168.8.202:9999/blazegraph/sparql") 
 
 advanced_mashup = AdvancedMashup()
 advanced_mashup.addMetadataHandler(metadata_query_handler)
