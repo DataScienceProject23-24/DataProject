@@ -192,19 +192,18 @@ class AdvancedMashup(BasicMashup):
                     result_list.append(activity) 
         return result_list            
                     
-'''
-if object_id in id_list:
-    result_list.append(activity)                    
-''' 
+#'''
+#if object_id in id_list:
+#    result_list.append(activity)                    
+#''' 
+
+
 
             
 
           
 
-                
-
-
-
+        
 
 
 
