@@ -25,66 +25,6 @@ class BasicMashup(object):
         self.processQuery.append(processHandler)
         return True 
     
-<<<<<<< HEAD
-    def getEntityById(self, id):                                #checked for both person and obj ids 
-        handler_list = self.metadataQuery
-        df_list = []
-
-        for handler in handler_list:
-            df_list.append(handler.getById(id)) #list of df
-        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("") #one big df
-
-        for _,row in df_union.iterrows():
-            if "authorName" in row:
-                author = row['authorName']
-                if author != "":
-                    return Person(id=id,name = row['authorName'])
-                elif author == "":
-                    return None
-                            
-            else:
-                type = row["type"]
-                authors_list = row['Authors'].split(";") if "Authors" in row and row['Authors'] else []
-
-                if "NauticalChart" in type:
-                    return NauticalChart(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
-                    
-
-                elif "ManuscriptPlate" in type:
-                    return ManuscriptPlate(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)    
-                    
-
-                elif "ManuscriptVolume" in type:
-                    return ManuscriptVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
-                    
-
-                elif "Book" in type:
-                    return PrintedVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
-                    
-
-                elif "PrintedMaterial" in type:
-                    return PrintedMaterial(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
-                    
-
-                elif "Herbarium" in type:
-                    return Herbarium(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
-                    
-
-                elif "Specimen" in type:
-                    return  Specimen(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
-                    
-
-                elif "Painting" in type:
-                    return Painting(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
-                    
-
-                elif "Model" in type:
-                    return Model(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
-                    
-
-                elif "Map" in type:
-                    return Map(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
-=======
     def combineAuthorsOfObjects(self,df,handler):
         for idx, row in df.iterrows():
             id = row["id"]
@@ -154,7 +94,6 @@ class BasicMashup(object):
 
                 elif "Map" in type:
                     return Map(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
->>>>>>> ezgi
                 
                 else:
                     return None
@@ -539,35 +478,6 @@ class AdvancedMashup(BasicMashup):
                     authors_of_obj.add((auth.id,auth.name))
         authors = [Person(id = auth[0],name=auth[1]) for auth in authors_of_obj]
         return authors
-    
-
-
-u=ProcessDataUploadHandler()
-uu = MetadataUploadHandler()
-grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
-path = r"C:\Users\annap\Documents\GitHub\DataProject\process.json" 
-path_ = r"C:\Users\annap\Documents\GitHub\DataProject\meta.csv"
-u.setDbPathOrUrl("activities.db")
-u.pushDataToDb(path)
-uu.setDbPathOrUrl(grp_endpoint)
-uu.pushDataToDb(path_)
-q = ProcessDataQueryHandler()
-qq = MetadataQueryHandler()
-q.setDbPathOrUrl("activities.db")
-qq.setDbPathOrUrl(grp_endpoint)
-am = AdvancedMashup()
-am.addProcessHandler(q)
-am.addMetadataHandler(qq)
-
-
- 
-#obj = am.getAuthorsOfObjectsAcquiredInTimeFrame("2023-08-09","2023-11-09") 
-#print(obj)
-#for i in obj:
-#    print(i.id)
-
-#i.id, i.title, i.date, i.owner, i.place
-#i.institute, i.person, i.tool, i.start, i.end, i.refers_to
 
 
 
