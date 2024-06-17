@@ -21,8 +21,9 @@ class CulturalHeritageObject(IdentifiableEntity):
         self.owner = owner
         self.place = place
         self.hasAuthor = set()
-        for author in authors:
-            self.hasAuthor.add(author)
+        auth = authors.split(";")
+        for i in auth:
+            self.hasAuthor.add(i)
 
     def getTitle(self):
         return self.title
@@ -35,9 +36,14 @@ class CulturalHeritageObject(IdentifiableEntity):
     
     def getAuthors(self):
         result_authors = []
-        for author in self.hasAuthor:
-            result_authors.append(author)
-        result_authors.sort()
+        if len(self.hasAuthor)>1:
+            for author in self.hasAuthor:
+                author_name, author_id = author.split("-")
+                result_authors.append(Person(id=author_id,name=author_name))
+        else:
+            author = self.hasAuthor.pop()
+            author_name, author_id = author.split("-")
+            result_authors.append(Person(id=author_id,name=author_name))
         return result_authors
     
 

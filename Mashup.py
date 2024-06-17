@@ -25,12 +25,24 @@ class BasicMashup(object):
         self.processQuery.append(processHandler)
         return True 
     
+    def combineAuthorsOfObjects(self,df,handler):
+        for idx, row in df.iterrows():
+            id = row["id"]
+            authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
+            authors_df.insert(loc=0,column="id",value=str(id))
+            authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
+            output = authors_df.groupby('id')['auth'].apply(';'.join)
+            df.at[idx,"Authors"] = str(output.iloc[0])
+        return df.drop_duplicates()
+
     def getEntityById(self, id):                                #checked for both person and obj ids 
         handler_list = self.metadataQuery
         df_list = []
 
         for handler in handler_list:
-            df_list.append(handler.getById(id)) #list of df
+            entity = handler.getById(id)
+            entity_update = self.combineAuthorsOfObjects(entity,handler)
+            df_list.append(entity_update) #list of df
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("") #one big df
 
         for _,row in df_union.iterrows():
@@ -43,46 +55,45 @@ class BasicMashup(object):
                             
             else:
                 type = row["type"]
-                authors_list = row['Authors'].split(";") if "Authors" in row and row['Authors'] else []
 
                 if "NauticalChart" in type:
-                    return NauticalChart(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
+                    return NauticalChart(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "ManuscriptPlate" in type:
-                    return ManuscriptPlate(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)    
+                    return ManuscriptPlate(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
                     
 
                 elif "ManuscriptVolume" in type:
-                    return ManuscriptVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
+                    return ManuscriptVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Book" in type:
-                    return PrintedVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
+                    return PrintedVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "PrintedMaterial" in type:
-                    return PrintedMaterial(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
+                    return PrintedMaterial(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Herbarium" in type:
-                    return Herbarium(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
+                    return Herbarium(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Specimen" in type:
-                    return  Specimen(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
+                    return  Specimen(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Painting" in type:
-                    return Painting(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
+                    return Painting(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Model" in type:
-                    return Model(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
+                    return Model(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Map" in type:
-                    return Map(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=authors_list)
+                    return Map(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 
                 else:
                     return None
