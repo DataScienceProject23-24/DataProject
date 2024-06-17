@@ -316,15 +316,15 @@ class BasicMashup(object):
         for idx, row in df_union.iterrows():
             activity_type = (row["internalId"].split("-"))[0]
             if activity_type == "acquisition":
-                entry = Acquisition(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"],row["technique"])
+                entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"],technique=row["technique"])
             elif activity_type == "processing":
-                entry = Processing(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])   
+                entry = Processing(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])   
             elif activity_type == "modelling":
-                entry = Modelling(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])
+                entry = Modelling(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
             elif activity_type == "optimising":
-                entry = Optimising(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])    
+                entry = Optimising(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])    
             elif activity_type == "exporting":
-                entry = Exporting(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])
+                entry = Exporting(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
             list_activities.append(entry)
         return list_activities
     
@@ -338,15 +338,15 @@ class BasicMashup(object):
         for idx, row in df_union.iterrows():
             activity_type = (row["internalId"].split("-"))[0]
             if activity_type == "acquisition":
-                entry = Acquisition(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"],row["technique"])
+                entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"],technique=row["technique"])
             elif activity_type == "processing":
-                entry = Processing(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])   
+                entry = Processing(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])   
             elif activity_type == "modelling":
-                entry = Modelling(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])
+                entry = Modelling(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
             elif activity_type == "optimising":
-                entry = Optimising(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])    
+                entry = Optimising(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])    
             elif activity_type == "exporting":
-                entry = Exporting(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])
+                entry = Exporting(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
             list_activities.append(entry) 
         return list_activities
 
@@ -360,15 +360,15 @@ class BasicMashup(object):
         for idx, row in df_union.iterrows():
             activity_type = (row["internalId"].split("-"))[0]
             if activity_type == "acquisition":
-                entry = Acquisition(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"],row["technique"])
+                entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"],technique=row["technique"])
             elif activity_type == "processing":
-                entry = Processing(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])   
+                entry = Processing(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])   
             elif activity_type == "modelling":
-                entry = Modelling(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])
+                entry = Modelling(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
             elif activity_type == "optimising":
-                entry = Optimising(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])    
+                entry = Optimising(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])    
             elif activity_type == "exporting":
-                entry = Exporting(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"])
+                entry = Exporting(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
             list_activities.append(entry)
         return list_activities
     
@@ -380,13 +380,14 @@ class BasicMashup(object):
         df_union = pd.concat(df_list, ignore_index=True)
         list_acquisitions = []
         for idx, row in df_union.iterrows():
-            entry = Acquisition(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"],row["technique"])
+            entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"],technique=row["technique"])
             list_acquisitions.append(entry)
         return list_acquisitions
     
 
 class AdvancedMashup(BasicMashup):
-    
+    def __init__(self):
+        super().__init__()
     def getActivitiesOnObjectsAuthoredBy(self, personId):
         cultural_objects = self.getCulturalHeritageObjectsAuthoredBy(personId)
         id_list = []
@@ -435,3 +436,16 @@ class AdvancedMashup(BasicMashup):
                 result.append(obj)
 
         return result
+    
+    def getAuthorsOfObjectsAcquiredInTimeFrame(self, start:str, end:str):
+        acquisition_start = [i.refers_to for i in self.getActivitiesStartedAfter(start) if type(i) is Acquisition]
+        acquisition_end = [i.refers_to for i in self.getActivitiesEndedBefore(end) if type(i) is Acquisition]
+        acquisition_list = [obj for obj in acquisition_start if obj in acquisition_end]
+        authors_of_obj = set()
+        for i in acquisition_list:
+            authors = self.getAuthorsOfCulturalHeritageObject(str(i))
+            for auth in authors:
+                if auth is not None:
+                    authors_of_obj.add((auth.id,auth.name))
+        authors = [Person(id = auth[0],name=auth[1]) for auth in authors_of_obj]
+        return authors
