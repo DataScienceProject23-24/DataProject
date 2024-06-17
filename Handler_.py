@@ -127,6 +127,7 @@ class MetadataUploadHandler(UploadHandler):
                     my_graph.add((subj_person, id, Literal(author_id)))
 
 
+
         CulturalHeritageObject.pop("Author")
         #upload the graph on triplestore
 
@@ -185,16 +186,17 @@ class QueryHandler(Handler):
         WHERE
             {
             SELECT* WHERE{
-            ?id schema:identifier '%s'.  
+            ?obj schema:identifier '%s'.
+            ?obj schema:identifier ?id .
             VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
-            ?id rdf:type ?type.
-            ?id schema:title ?title.
-            ?id schema:dateCreated ?date.
-            ?id schema:acquiredFrom ?owner.
-            ?id schema:location ?place.
+            ?obj rdf:type ?type.
+            ?obj schema:title ?title.
+            ?obj schema:dateCreated ?date.
+            ?obj schema:acquiredFrom ?owner.
+            ?obj schema:location ?place.
             OPTIONAL { SELECT * WHERE {
               ?authorId schema:name ?Authors.
-              ?id schema:author ?authorId.}
+              ?obj schema:author ?authorId.}
               }
             }
         }
@@ -209,9 +211,9 @@ class QueryHandler(Handler):
         WHERE
         {
         SELECT* WHERE{
-            ?id schema:identifier '%s'.
-            ?id schema:name ?authorName.
-            ?id schema:identifier ?authorId.   
+            ?url schema:identifier '%s'.
+            ?url schema:name ?authorName.
+            ?url schema:identifier ?authorId.   
             }
         }
         """%(id)

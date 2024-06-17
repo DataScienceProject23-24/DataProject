@@ -1,7 +1,7 @@
 Id,Type,Title,Date,Author,Owner,Place
-1,Nautical chart, Nautical chart,1482,"Benincasa, Grazioso (ULAN:500114874)",BUB,Bologna
-2,Printed volume,The History of Plants,1497,Teofrasto (VIAF:265397758),BUB,Bologna
-3,Herbarium,On Medical Material,1523,Dioscorides Pedanius (VIAF:78822798),BUB,Bologna
+1,Nautical chart, Nautical chart,1482,"Benincasa, Grazioso (ULAN:500114874);Teofrasto (VIAF:265397758)",BUB,Bologna
+2,Printed volume,The History of Plants,1497,"Teofrasto (VIAF:265397758)",BUB,Bologna
+3,Herbarium,On Medical Material,1523,"Dioscorides Pedanius (VIAF:78822798)",BUB,Bologna
 4,Printed volume,The Natural History,1519,"Plinius Secundus, Gaius (VIAF:100219162)",BUB,Bologna
 5,Nautical chart, Incomplete coastal profile of the American continent,1500-1599,"Agnese, Battista (ULAN:500048088)",BUB,Bologna
 6,Nautical chart,Map of Cusco,1556,"Ramusio, Giovanni Battista (VIAF:68943129)",BUB,Bologna
@@ -12,7 +12,7 @@ Id,Type,Title,Date,Author,Owner,Place
 11,Specimen,"Atlantic horseshoe crab (Linnaeus, 1758)",1758,,Sistema Museale di Ateneo di Bologna,Bologna
 12,Specimen,"Armadillo (Linnaeus, 1757)",1757,,Sistema Museale di Ateneo di Bologna,Bologna
 13,Painting, Portrait of Ulisse Aldrovandi,1582-1585,"Carracci, Agostino (ULAN:500115349)",Accademia Carrara,Bergamo
-14,Printed material,A highly useful compendium of plants,1586,Dioscorides Pedanius (VIAF:78822798),"Biblioteca del Dipartimento di Scienze Biologiche, Geologiche e Ambientali, Bologna",Bologna
+14,Printed material,A highly useful compendium of plants,1586,"Dioscorides Pedanius (VIAF:78822798)","Biblioteca del Dipartimento di Scienze Biologiche, Geologiche e Ambientali, Bologna",Bologna
 15,Map,Map of the botanical garden in Padua,1591,,BUB,Bologna
 16,Map,Map of the botanical garden in Bologna,1753,"Monti, Giuseppe (VIAF:54929912)",Orto Botanico ed Herbarium di Bologna,Bologna
 17,Manuscript volume,Sunflower,1500-1599,"Aldrovandi, Ulisse (VIAF:100190422)",BUB,Bologna
