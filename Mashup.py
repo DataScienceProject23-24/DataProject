@@ -399,8 +399,7 @@ class AdvancedMashup(BasicMashup):
         for activity in activities:
             object_id = activity.refers_to
             for id in id_list:
-                object_reference = "object-"+str(id-1)
-                if object_id == object_reference:
+                if object_id == id:
                     result_list.append(activity) 
         return result_list       
 
