@@ -186,19 +186,11 @@ class QueryHandler(Handler):
             ?obj schema:identifier '%s'.
             ?obj schema:identifier ?id .  
             VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
-<<<<<<< HEAD
-            ?id rdf:type ?type.
-            ?id schema:title ?title.
-            ?id schema:dateCreated ?date.
-            ?id schema:acquiredFrom ?owner.
-            ?id schema:location ?place.
-=======
             ?obj rdf:type ?type.
             ?obj schema:title ?title.
             ?obj schema:dateCreated ?date.
             ?obj schema:acquiredFrom ?owner.
             ?obj schema:location ?place.
->>>>>>> ezgi
             OPTIONAL { SELECT * WHERE {
               ?authorId schema:name ?Authors.
               ?obj schema:author ?authorId.}
