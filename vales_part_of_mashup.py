@@ -174,6 +174,54 @@ class BasicMashup(object):  #combining the results coming from different handler
             
         return result
     
+    def getAllCulturalHeritageObjects(self):
+        result = []
+        for query in self.metadataQuery:
+            df = query.getAllCulturalHeritageObjects()
+
+            for _, row in df.iterrows():
+                type = row['type']
+                if "NauticalChart" in type:
+                    object = NauticalChart(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    result.append(object)
+
+                elif "ManuscriptPlate" in type:
+                    object = ManuscriptPlate(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
+                    result.append(object) 
+
+                elif "ManuscriptVolume" in type:
+                    object = ManuscriptVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    result.append(object)
+
+                elif "Book" in type:
+                    object = PrintedVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    result.append(object)
+
+                elif "PrintedMaterial" in type:
+                    object = PrintedMaterial(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    result.append(object)
+
+                elif "Herbarium" in type:
+                    object = Herbarium(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    result.append(object)
+
+                elif "Specimen" in type:
+                    object = Specimen(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    result.append(object)
+
+                elif "Painting" in type:
+                    object = Painting(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    result.append(object)
+
+                elif "Model" in type:
+                    object = Model(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    result.append(object)
+
+                elif "Map" in type:
+                    object = Map(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    result.append(object)
+        return result
+    
 class AdvancedMashup(BasicMashup):
     
     def getActivitiesOnObjectsAuthoredBy(self, personId):
@@ -190,22 +238,42 @@ class AdvancedMashup(BasicMashup):
                 object_reference = "object-"+str(id-1)
                 if object_id == object_reference:
                     result_list.append(activity) 
-        return result_list            
+        return result_list    
+
+    def getObjectsHandledByResponsibleInstitution(self, institution):
+        activities = self.getActivitiesByResponsibleInstitution(institution)
+    # get ids of object in activity
+        id_list = []
+        for activity in activities:
+            object_id = activity.refers_to
+            id_list.append(object_id)
+        #print(id_list)
+    
+        cultural_objects = self.getAllCulturalHeritageObjects()
+    # Crea un dizionario per mappare gli ID degli oggetti 
+        #cultural_object_dict = {obj.id: obj for obj in cultural_objects}
+    # Recupera gli oggetti del patrimonio culturale utilizzando gli ID estratti
+        result = []
+        for obj in cultural_objects:
+            if obj.id in id_list:
+                result.append(obj)
+
+        return result 
+
+    def getObjectsHandledByResponsiblePerson(self, name):
+        activities = self.getActivitiesByResponsiblePerson(name)
+        id_list = []
+        for activity in activities:
+            object_id = activity.refers_to
+            id_list.append(object_id)
+        cultural_objects = self.getAllCulturalHeritageObjects()
+        result = []
+        for obj in cultural_objects:
+            if obj.id in id_list:
+                result.append(obj)
+
+        return result
                     
-#'''
-#if object_id in id_list:
-#    result_list.append(activity)                    
-#''' 
-
-
-
-            
-
-          
-
-        
-
-
 
 data = ProcessDataUploadHandler()
 data.setDbPathOrUrl("database.db")
@@ -225,16 +293,5 @@ advanced_mashup = AdvancedMashup()
 advanced_mashup.addMetadataHandler(metadata_query_handler)
 advanced_mashup.addProcessHandler(process_query_handler)
 
-resultlist = advanced_mashup.getActivitiesOnObjectsAuthoredBy("VIAF:78822798")
+resultlist = advanced_mashup.getObjectsHandledByResponsibleInstitution("Council")
 pprint(resultlist)
-
-#instance of MatadataQueryHandler
-#metadata_handler = MetadataQueryHandler()
-#metadata_handler.setDbPathOrUrl("")   #missing the path of database
-
-#add instance of MatadataQueryHandler to the BasicMashup
-#mashup.addMetadataHandler(metadata_handler)
-
-#instance of ProcessQueryHandler
-
-#mashup.addProcessHandler(process_handler)        

@@ -246,10 +246,18 @@ class MetadataQueryHandler(QueryHandler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?object
+        SELECT *
         WHERE {
-        ?object rdf:type ?type .
+          ?object rdf:type ?type.
+          ?object schema:identifier ?id.
+          ?object schema:title ?title.
+          ?object schema:dateCreated ?date.
+          ?object schema:acquiredFrom ?owner.
+          ?object schema:location ?place.
+          ?object schema:author ?Authors.
+       
         }
+
         """
         df_sparql_getAllCulturalHeritageObjects = get(endpoint, query_getAllCulturalHeritageObjects, True)
         return df_sparql_getAllCulturalHeritageObjects
@@ -440,7 +448,9 @@ data2.pushDataToDb("meta.csv")
 
 metadata_query_handler = MetadataQueryHandler()
 metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-#pprint(metadata_query_handler.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874"))
+#pprint(metadata_query_handler.getAllCulturalHeritageObjects())
+#pprint(query_handler.getActivitiesByResponsibleInstitution("Council"))
 
 #df_activities = query_handler.getAllCulturalHeritageObjects()
 #pprint(df_activities)        
+
