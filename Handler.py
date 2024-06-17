@@ -28,7 +28,7 @@ class MetadataUploadHandler(UploadHandler):
         my_graph = Graph()
         NauticalChart = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/NauticalChart") 
         ManuscriptPlate = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/ManuscriptPlate") 
-        ManuscriptVolume = URIRef("https://schema.org/Manuscript")
+        ManuscriptVolume = URIRef("https://schema.org/ManuscriptVolume")
         PrintedVolume = URIRef("https://schema.org/Book")
         PrintedMaterial = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/PrintedMaterial")
         Herbarium = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/Herbarium")
@@ -65,8 +65,6 @@ class MetadataUploadHandler(UploadHandler):
                             "Place" : "string",
                             "Type" : "string"
                         }).drop_duplicates() 
-        
-        print(CulturalHeritageObject.columns)
         
         #now I insert all the objects in the graph 
         for idx, row in CulturalHeritageObject.iterrows():
@@ -461,4 +459,4 @@ data2.pushDataToDb("meta.csv")
 metadata_query_handler = MetadataQueryHandler()
 metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
 
-pprint(metadata_query_handler.getAllCulturalHeritageObjects())
+#pprint(metadata_query_handler.getAllCulturalHeritageObjects())

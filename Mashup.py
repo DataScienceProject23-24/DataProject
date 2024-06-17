@@ -500,7 +500,10 @@ mashup = BasicMashup()
 mashup.addProcessHandler(process_query_handler)
 mashup.addMetadataHandler(metadata_query_handler)
 
-activities = mashup.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874")
-print(activities)
-#for a in activities:
-    #print(a.institute, a.person, a.tool, a.start, a.end, a.refers_to)
+r = mashup.getCulturalHeritageObjectsAuthoredBy("VIAF:100190422")
+#print(r)
+#print(len(r))
+#for i in r:
+    #print(i.id, i.title, i.date, i.owner, i.place, i.authors)
+
+#authors = row.get('authors', '')  # Ensure you get the 'authors' from the row
