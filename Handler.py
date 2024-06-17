@@ -148,32 +148,20 @@ class ProcessDataUploadHandler(UploadHandler):
         super().__init__()
     def pushDataToDb(self, path):
         process_json = pd.read_json(path)
-        object_ids=process_json[["object id"]]
-        object_id = []
-        for idx, row in object_ids.iterrows():
-            object_id.append("object-" + str(idx))
-        object_ids.insert(0, "objectId", pd.Series(object_id, dtype="string"))
-        
         norm_df=[]
-        activity_id = []
-        activities_df = pd.DataFrame()
         cols = ["acquisition","processing","modelling","optimising","exporting"]
         for col in cols:
             norm = pd.json_normalize(process_json[col])
-            norm["tool"] = norm["tool"].astype("str")
-            norm.insert((norm.shape[1]),"objectId",object_ids["objectId"])
+            object_ids = process_json["object id"]
+            norm["tool"] = norm["tool"].astype(str)
             internal_id = []
             for idx, row in norm.iterrows():
                 internal_id.append(col + "-" + str(idx))
-                activity_id.append(col + "-" + str(idx))
-            norm.insert(loc=0, column='internalId', value=internal_id)
+            norm.insert(loc=1, column='internalId', value=internal_id)
+            norm.insert(loc=0, column='objectId', value=object_ids)
             norm_df.append(norm)
         
-        activities_df["activityId"] = activity_id
-
-        
         with connect(self.getDbPathOrUrl()) as con:
-            activities_df.to_sql("Activities", con, if_exists="replace", index=False)
             norm_df[0].to_sql("Acquisition", con, if_exists="replace", index=False)
             norm_df[1].to_sql("Processing", con, if_exists="replace", index=False)
             norm_df[2].to_sql("Modelling", con, if_exists="replace", index=False)
@@ -316,7 +304,7 @@ class MetadataQueryHandler(QueryHandler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?type ?title ?date ?owner ?place ?hasAuthor
+        SELECT ?type ?id ?title ?date ?owner ?place ?hasAuthor
         WHERE {
         ?author schema:identifier '%s'.
         ?object schema:author ?author .
@@ -326,6 +314,7 @@ class MetadataQueryHandler(QueryHandler):
         ?object schema:acquiredFrom ?owner.
         ?object schema:location ?place. 
         ?object schema:author ?hasAuthor.
+        ?object schema:identifier ?id.
         }
         """%(personId) #needs to be inside " "
 
@@ -457,3 +446,4 @@ class ProcessDataQueryHandler(QueryHandler):
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
+        

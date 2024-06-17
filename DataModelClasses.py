@@ -77,7 +77,8 @@ class Activity(object):
         self.institute = institute
         self.person = person 
         self.tool = set()
-        for Tool in tools:
+        Tools = tools.split(",")
+        for Tool in Tools:
             self.tool.add(Tool)
         self.start = start
         self.end = end
@@ -123,4 +124,3 @@ class Optimising(Activity):
 
 class Exporting(Activity):
     pass
-        
