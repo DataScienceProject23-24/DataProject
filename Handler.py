@@ -461,4 +461,4 @@ data2.pushDataToDb("meta.csv")
 metadata_query_handler = MetadataQueryHandler()
 metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
 
-#pprint(metadata_query_handler.getAllCulturalHeritageObjects())
+pprint(metadata_query_handler.getAllCulturalHeritageObjects())
