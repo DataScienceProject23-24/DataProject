@@ -500,7 +500,7 @@ mashup = BasicMashup()
 mashup.addProcessHandler(process_query_handler)
 mashup.addMetadataHandler(metadata_query_handler)
 
-activities = mashup.getAuthorsOfCulturalHeritageObject("1")
-#print(activities)
+activities = mashup.getCulturalHeritageObjectsAuthoredBy("ULAN:500114874")
+print(activities)
 #for a in activities:
     #print(a.institute, a.person, a.tool, a.start, a.end, a.refers_to)
