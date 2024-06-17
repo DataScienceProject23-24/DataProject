@@ -188,10 +188,10 @@ class QueryHandler(Handler):
             ?id schema:identifier '%s'.  
             VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
             ?id rdf:type ?type.
-            ?id schema:title ?Title.
-            ?id schema:dateCreated ?Date.
-            ?id schema:acquiredFrom ?Owner.
-            ?id schema:location ?Place.
+            ?id schema:title ?title.
+            ?id schema:dateCreated ?date.
+            ?id schema:acquiredFrom ?owner.
+            ?id schema:location ?place.
             OPTIONAL { SELECT * WHERE {
               ?authorId schema:name ?Authors.
               ?id schema:author ?authorId.}
