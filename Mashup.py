@@ -383,3 +383,55 @@ class BasicMashup(object):
             entry = Acquisition(row["responsible institute"],row["responsible person"],row["tool"],row["start date"],row["end date"],row["objectId"],row["technique"])
             list_acquisitions.append(entry)
         return list_acquisitions
+    
+
+class AdvancedMashup(BasicMashup):
+    
+    def getActivitiesOnObjectsAuthoredBy(self, personId):
+        cultural_objects = self.getCulturalHeritageObjectsAuthoredBy(personId)
+        id_list = []
+        for object in cultural_objects:
+            id = object.id
+            id_list.append(id)   
+        activities = self.getAllActivities()
+        result_list = []
+        for activity in activities:
+            object_id = activity.refers_to
+            for id in id_list:
+                object_reference = "object-"+str(id-1)
+                if object_id == object_reference:
+                    result_list.append(activity) 
+        return result_list       
+
+
+    def getObjectsHandledByResponsiblePerson(self, name):
+        activities = self.getActivitiesByResponsiblePerson(name)
+        id_list = []
+        for activity in activities:
+            object_id = activity.refers_to
+            id_list.append(object_id)
+
+        cultural_objects = self.getAllCulturalHeritageObjects()
+        result = []
+
+        for obj in cultural_objects:
+            if obj.id in id_list:
+                result.append(obj)
+
+        return result
+
+
+    def getObjectsHandledByResponsibleInstitution(self, institution):
+        activities = self.getActivitiesByResponsibleInstitution(institution)
+        id_list = []
+        for activity in activities:
+            object_id = activity.refers_to
+            id_list.append(object_id)
+    
+        cultural_objects = self.getAllCulturalHeritageObjects()
+        result = []
+        for obj in cultural_objects:
+            if obj.id in id_list:
+                result.append(obj)
+
+        return result

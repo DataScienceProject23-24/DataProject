@@ -316,7 +316,7 @@ class MetadataQueryHandler(QueryHandler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT ?type ?title ?date ?owner ?place ?hasAuthor
+        SELECT ?type ?id ?title ?date ?owner ?place ?hasAuthor
         WHERE {
         ?author schema:identifier '%s'.
         ?object schema:author ?author .
@@ -326,6 +326,7 @@ class MetadataQueryHandler(QueryHandler):
         ?object schema:acquiredFrom ?owner.
         ?object schema:location ?place. 
         ?object schema:author ?hasAuthor.
+        ?object schema:identifier ?id.
         }
         """%(personId) #needs to be inside " "
 
@@ -457,3 +458,4 @@ class ProcessDataQueryHandler(QueryHandler):
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union
+        
