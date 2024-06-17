@@ -220,9 +220,9 @@ class QueryHandler(Handler):
         df_person = get(endpoint, query_personId, True)
 
         if df_object.empty == False:
-            return df_object
+            return df_object.fillna("")
         elif df_person.empty == False:
-            return df_person
+            return df_person.fillna("")
         else:
             df_entity = pd.DataFrame()
             return df_entity
