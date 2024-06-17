@@ -64,7 +64,7 @@ class MetadataUploadHandler(UploadHandler):
                             "Owner" : "string",
                             "Place" : "string",
                             "Type" : "string"
-                        })
+                        }).drop_duplicates() 
 
         
         #now I insert all the objects in the graph 
@@ -249,7 +249,7 @@ class MetadataQueryHandler(QueryHandler):
         """
 
         df_sparql_getAllPeople = get(endpoint, query_getAllPeople, True)
-        return df_sparql_getAllPeople
+        return df_sparql_getAllPeople.fillna("")
 
 
     def getAllCulturalHeritageObjects(self):        
@@ -273,7 +273,7 @@ class MetadataQueryHandler(QueryHandler):
 
         """
         df_sparql_getAllCulturalHeritageObjects = get(endpoint, query_getAllCulturalHeritageObjects, True)
-        return df_sparql_getAllCulturalHeritageObjects
+        return df_sparql_getAllCulturalHeritageObjects.fillna("")
 
 
     def getAuthorsOfCulturalHeritageObject(self, objectId: str):
@@ -293,7 +293,7 @@ class MetadataQueryHandler(QueryHandler):
 
         """%(objectId)
         df_sparql_getAuthorsOfCulturalHeritageObject = get(endpoint, query_getAuthorsOfCulturalHeritageObject, True)
-        return df_sparql_getAuthorsOfCulturalHeritageObject
+        return df_sparql_getAuthorsOfCulturalHeritageObject.fillna("")
 
 
 
@@ -319,7 +319,7 @@ class MetadataQueryHandler(QueryHandler):
         """%(personId) #needs to be inside " "
 
         df_sparql_getCulturalHeritageObjectsAuthoredBy = get(endpoint, query_getCulturalHeritageObjectsAuthoredBy, True)
-        return df_sparql_getCulturalHeritageObjectsAuthoredBy
+        return df_sparql_getCulturalHeritageObjectsAuthoredBy.fillna("")
     
 class ProcessDataQueryHandler(QueryHandler):
     def __init__(self):
@@ -340,7 +340,7 @@ class ProcessDataQueryHandler(QueryHandler):
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
-            return df_union
+            return df_union.fillna("")
 
     def getActivitiesByResponsibleInstitution(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
@@ -357,7 +357,7 @@ class ProcessDataQueryHandler(QueryHandler):
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
-            return df_union    
+            return df_union.fillna("")   
     
     def getActivitiesByResponsiblePerson(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
@@ -374,7 +374,7 @@ class ProcessDataQueryHandler(QueryHandler):
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
-            return df_union
+            return df_union.fillna("")
 
 
     def getActivitiesUsingTool(self, partialName):
@@ -392,7 +392,7 @@ class ProcessDataQueryHandler(QueryHandler):
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
-            return df_union
+            return df_union.fillna("")
   
     def getActivitiesStartedAfter(self, date):
         with connect(self.getDbPathOrUrl()) as con:
@@ -409,7 +409,7 @@ class ProcessDataQueryHandler(QueryHandler):
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
-            return df_union
+            return df_union.fillna("")
 
 
     def getActivitiesEndedBefore(self, date):
@@ -427,7 +427,7 @@ class ProcessDataQueryHandler(QueryHandler):
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
-            return df_union
+            return df_union.fillna("")
 
     
     def getAcquisitionsByTechnique(self, partialName):
@@ -445,5 +445,5 @@ class ProcessDataQueryHandler(QueryHandler):
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
-            return df_union
+            return df_union.fillna("")
         
