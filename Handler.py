@@ -65,7 +65,8 @@ class MetadataUploadHandler(UploadHandler):
                             "Place" : "string",
                             "Type" : "string"
                         }).drop_duplicates() 
-
+        
+        print(CulturalHeritageObject.columns)
         
         #now I insert all the objects in the graph 
         for idx, row in CulturalHeritageObject.iterrows():
@@ -343,15 +344,15 @@ class ProcessDataQueryHandler(QueryHandler):
 
     def getActivitiesByResponsibleInstitution(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
-            q1 = 'SELECT * FROM Acquisition WHERE "responsible insitute" LIKE ?;'
+            q1 = 'SELECT * FROM Acquisition WHERE "responsible institute" LIKE ?;'
             df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
-            q2 = 'SELECT * FROM Processing WHERE "responsible insitute" LIKE ?;'
+            q2 = 'SELECT * FROM Processing WHERE "responsible institute" LIKE ?;'
             df_p = pd.read_sql(q2, con, params=(f"%{partialName}%",))
-            q3 = 'SELECT * FROM Modelling WHERE "responsible insitute" LIKE ?;'
+            q3 = 'SELECT * FROM Modelling WHERE "responsible institute" LIKE ?;'
             df_m = pd.read_sql(q3, con, params=(f"%{partialName}%",))
-            q4 = 'SELECT * FROM Optimising WHERE "responsible insitute" LIKE ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "responsible institute" LIKE ?;'
             df_o = pd.read_sql(q4, con, params=(f"%{partialName}%",))
-            q5 = 'SELECT * FROM Exporting WHERE "responsible insitute" LIKE ?;'
+            q5 = 'SELECT * FROM Exporting WHERE "responsible institute" LIKE ?;'
             df_e = pd.read_sql(q5, con, params=(f"%{partialName}%",))
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
@@ -446,3 +447,18 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union.fillna("")
         
+data = ProcessDataUploadHandler()
+data.setDbPathOrUrl("activities.db")
+data.pushDataToDb("process.json")
+
+process_query_handler = ProcessDataQueryHandler()
+process_query_handler.setDbPathOrUrl("activities.db")
+
+data2 = MetadataUploadHandler()
+data2.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
+data2.pushDataToDb("meta.csv")
+
+metadata_query_handler = MetadataQueryHandler()
+metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
+
+#pprint(metadata_query_handler.getAllCulturalHeritageObjects())

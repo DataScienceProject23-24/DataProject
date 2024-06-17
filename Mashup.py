@@ -243,13 +243,15 @@ class BasicMashup(object):
         return result
     
     def getAllActivities(self):     #checked!
-        
         result = []
+        handler_list = self.processQuery
+        df_list = []
 
-        for handler in self.processQuery:
-            df = handler.getAllActivities()
+        for handler in handler_list:
+            df_list.append(handler.getAllActivities()) #list of df
+            df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
             
-            for _, row in df.iterrows():
+            for _, row in df_union.iterrows():
                 type, id = row["internalId"].split("-")
 
                 if type == "acquisition":
@@ -274,14 +276,16 @@ class BasicMashup(object):
                 
         return result 
     
-    def getActivitiesByResponsibleInstitution(self, institution):       #checked, empty list???????????
-        
+    def getActivitiesByResponsibleInstitution(self, partialName):       #checked, empty list???????????
         result = []
+        handler_list = self.processQuery
+        df_list = []
 
-        for handler in self.processQuery:
-            df = handler.getActivitiesByResponsibleInstitution(institution)
+        for handler in handler_list:
+            df_list.append(handler.getActivitiesByResponsibleInstitution(partialName)) #list of df
+            df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
-            for _, row in df.iterrows():
+            for _, row in df_union.iterrows():
                 type, id = row["internalId"].split("-")
 
                 if type == "acquisition":
@@ -423,15 +427,12 @@ class AdvancedMashup(BasicMashup):
         cultural_objects = self.getCulturalHeritageObjectsAuthoredBy(personId)
         id_list = []
         for object in cultural_objects:
-            id = object.id
-            id_list.append(id)   
+            id_list.append(object.id)   
         activities = self.getAllActivities()
         result_list = []
         for activity in activities:
-            object_id = activity.refers_to
-            for id in id_list:
-                if object_id == id:
-                    result_list.append(activity) 
+            if activity.refers_to in id_list:
+                result_list.append(activity) 
         return result_list       
 
 
@@ -483,14 +484,14 @@ class AdvancedMashup(BasicMashup):
 
 data = ProcessDataUploadHandler()
 data.setDbPathOrUrl("activities.db")
-data.getDbPathOrUrl("process.json")
+data.pushDataToDb("process.json")
 
 process_query_handler = ProcessDataQueryHandler()
 process_query_handler.setDbPathOrUrl("activities.db")
 
 data2 = MetadataUploadHandler()
 data2.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-data2.getDbPathOrUrl("meta.csv")
+data2.pushDataToDb("meta.csv")
 
 metadata_query_handler = MetadataQueryHandler()
 metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
@@ -499,4 +500,7 @@ mashup = BasicMashup()
 mashup.addProcessHandler(process_query_handler)
 mashup.addMetadataHandler(metadata_query_handler)
 
-pprint(mashup.getCulturalHeritageObjectsAuthoredBy("VIAF:68967770"))
+activities = mashup.getAuthorsOfCulturalHeritageObject("1")
+print(activities)
+#for a in activities:
+    #print(a.institute, a.person, a.tool, a.start, a.end, a.refers_to)
