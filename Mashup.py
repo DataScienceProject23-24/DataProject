@@ -188,13 +188,15 @@ class BasicMashup(object):
     
 
     def getCulturalHeritageObjectsAuthoredBy(self, authorId):       #checked, error on Authors!!
-
         result = []
+        handler_list = self.metadataQuery
+        df_list = []
 
-        for handler in self.metadataQuery:
-            df = handler.getCulturalHeritageObjectsAuthoredBy(authorId) 
+        for handler in handler_list:
+            df_list.append(handler.getCulturalHeritageObjectsAuthoredBy(authorId)) #list of df
+            df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
-            for _, row in df.iterrows():
+            for _, row in df_union.iterrows():
 
                 type = row['type']
 
@@ -479,9 +481,22 @@ class AdvancedMashup(BasicMashup):
         authors = [Person(id = auth[0],name=auth[1]) for auth in authors_of_obj]
         return authors
 
+data = ProcessDataUploadHandler()
+data.setDbPathOrUrl("activities.db")
+data.getDbPathOrUrl("process.json")
 
+process_query_handler = ProcessDataQueryHandler()
+process_query_handler.setDbPathOrUrl("activities.db")
 
+data2 = MetadataUploadHandler()
+data2.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
+data2.getDbPathOrUrl("meta.csv")
 
+metadata_query_handler = MetadataQueryHandler()
+metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
 
+mashup = BasicMashup()
+mashup.addProcessHandler(process_query_handler)
+mashup.addMetadataHandler(metadata_query_handler)
 
-
+pprint(mashup.getCulturalHeritageObjectsAuthoredBy("VIAF:68967770"))
