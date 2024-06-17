@@ -32,7 +32,7 @@ class BasicMashup(object):
             for _,row in df.iterrows():
                 if "authorName" in df.columns:
                     author = row['authorName']
-                    if author != "NaN":
+                    if author != "":
                         return Person(id=id,name = row['authorName'])
                                
                 else:
@@ -149,7 +149,7 @@ class BasicMashup(object):
 
             for _, row in df.iterrows():
                 author = row['authorName']
-                if author != "NaN":              #!!!!!!
+                if author != "":              #!!!!!!
                     object = Person(id=row["authorId"],name = row['authorName'])
                     result.append(object)   
                 else:
@@ -448,3 +448,6 @@ class AdvancedMashup(BasicMashup):
                     authors_of_obj.add((auth.id,auth.name))
         authors = [Person(id = auth[0],name=auth[1]) for auth in authors_of_obj]
         return authors
+    
+
+
