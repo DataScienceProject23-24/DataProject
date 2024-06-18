@@ -505,9 +505,13 @@ mashup.addProcessHandler(process_query_handler)
 mashup.addMetadataHandler(metadata_query_handler)
 
 r = mashup.getCulturalHeritageObjectsAuthoredBy("VIAF:100190422")
-#print(r)
+print(r)
 #print(len(r))
-#for i in r:
-    #print(i.id, i.title, i.date, i.owner, i.place, i.authors)
+for i in r:
+    print(i.id, i.title, i.date, i.owner, i.place)
+    authors = []
+    authors.append(i.hasAuthor)
+for a in authors:
+    print(a.id, a.name)        
 
 #authors = row.get('authors', '')  # Ensure you get the 'authors' from the row
