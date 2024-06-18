@@ -192,7 +192,8 @@ class QueryHandler(Handler):
         
         SELECT ?id ?type ?title ?date ?owner ?place ?Authors
         WHERE {
-          ?obj schema:identifier '%s' .  
+          ?obj schema:identifier '%s' .
+          ?obj schema:identifier ?id .  
           ?obj rdf:type ?type.
           ?obj schema:acquiredFrom ?owner.
           ?obj schema:location ?place.
