@@ -27,12 +27,16 @@ class BasicMashup(object):
     
     def combineAuthorsOfObjects(self,df,handler):
         for idx, row in df.iterrows():
-            id = row["id"]
-            authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
-            authors_df.insert(loc=0,column="id",value=str(id))
-            authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
-            output = authors_df.groupby('id')['auth'].apply(';'.join)
-            df.at[idx,"Authors"] = str(output.iloc[0])
+            if row["Authors"] != "":
+                id = row["id"]
+                authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
+                authors_df.insert(loc=0,column="id",value=str(id))
+                authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
+                if authors_df.shape[0]>1:
+                    output = authors_df.groupby('id')['auth'].apply(';'.join)
+                    df.at[idx,"Authors"] = str(output.iloc[0])
+                else:
+                    df.at[idx,"Authors"] = authors_df.iloc[0,0]
         return df.drop_duplicates()
 
     def getEntityById(self, id):                                #checked for both person and obj ids 
