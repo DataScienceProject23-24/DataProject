@@ -1,3 +1,4 @@
+# E Z G I #
 class IdentifiableEntity(object):
     def __init__(self, id):
         self.id = id
@@ -6,58 +7,132 @@ class IdentifiableEntity(object):
 
 
 class Person(IdentifiableEntity):
-    def __init__(self, name):
+    def __init__(self, id, name):
+        super().__init__(id)
         self.name = name
-        super().__init__(self, id)
     def getName(self):
         return self.name
 
-
+# V I R G I #
 class CulturalHeritageObject(IdentifiableEntity):
-    def __init__(self, title, date, owner, place, authors):
-        #title
-        #date
-        #owner
-        #place
+    def __init__(self, id, title, date, owner, place, authors):
+        super().__init__(id)
+        self.title = title
+        self.date = date
+        self.owner = owner
+        self.place = place
         self.hasAuthor = set()
-        for author in authors:
-            self.hasAuthor.add(author)
-        
-        super().__init__(self, id)
+        if authors != "":
+            authors_list = authors.split(";")
+            auth = [i for i in authors_list]
+            if len(auth)>1:
+                for author in auth:
+                    author_name, author_id = author.split("-")
+                    self.hasAuthor.add(Person(id=author_id,name=author_name))
+            else:
+                author_name, author_id = auth[0].split("-")
+                self.hasAuthor.add(Person(id=author_id,name=author_name))
+        else:
+            self.hasAuthor.add(None)
 
-    #getTitle    
-    #getDate
-    #getOwner
-    #getPlace
+    def getTitle(self):
+        return self.title
+    def getDate(self):
+        return self.date
+    def getOwner(self):
+        return self.owner
+    def getPlace(self):
+        return self.place
     
     def getAuthors(self):
         result_authors = []
         for author in self.hasAuthor:
             result_authors.append(author)
-        result_authors.sort()
         return result_authors
+
     
 
-    class Activity(object):
-        def __init__(self, institute, person, tools, start, end, refersTo):
-            #institute
-            #person
-            self.tool = set()
-            for Tool in tools:
-                self.tool.add(Tool)
-            #start
-            #end
-            #refersTo
+class NauticalChart(CulturalHeritageObject):
+    pass
 
-        #getResponsibleInstitute
-        #getResponsiblePerson
+class ManuscriptPlate(CulturalHeritageObject):
+    pass
 
-        def getTools(self):
-            result_tools = set()
-            for Tool in self.tool:
-                result_tools.add(Tool)
-            return result_tools
+class ManuscriptVolume(CulturalHeritageObject):
+    pass
+
+class PrintedVolume(CulturalHeritageObject):
+    pass
+
+class PrintedMaterial(CulturalHeritageObject):
+    pass
+
+class Herbarium(CulturalHeritageObject):
+    pass
+
+class Specimen(CulturalHeritageObject):
+    pass
+
+class Painting(CulturalHeritageObject):
+    pass
+
+class Model(CulturalHeritageObject):
+    pass
+
+class Map(CulturalHeritageObject):
+    pass
+    
+
+# V A L E #
+class Activity(object):
+    def __init__(self, institute, person, tools, start, end, refers_to):
+        self.institute = institute
+        self.person = person 
+        self.tool = set()
+        Tools = tools.split(", ")
+        for Tool in Tools:
+            self.tool.add(Tool)
+        self.start = start
+        self.end = end
+        self.refers_to = refers_to
+     
+    def getResponsibleInsitute(self):
+        return self.institute
+    
+    def getResponsiblePerson(self):
+        return self.person
+
+    def getTools(self):
+        result_tools = set()
+        for Tool in self.tool:
+            result_tools.add(Tool)
+        return result_tools
+    
+    def getStartDate(self):
+        return self.start
+
+    def getEndDate(self):
+        return self.end
+
+    def refersTo (self):
+        return self.refers_to
+
+class Acquisition(Activity):
+    def __init__(self, institute, person, tools, start, end, refers_to, technique):
+        self.technique = technique    
+        super().__init__(institute, person, tools, start, end, refers_to)
         
-        #getStartDate
-        #getEndDate
-        #refersTo
+    def getTechnique(self):
+        return self.technique
+
+class Processing(Activity):
+    pass
+
+class Modelling(Activity):
+    pass
+
+class Optimising(Activity):
+    pass
+
+class Exporting(Activity):
+    pass
