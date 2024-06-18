@@ -24,6 +24,8 @@ class UploadHandler(Handler):
 class MetadataUploadHandler(UploadHandler):
     def __init__(self):
         super().__init__()
+
+    # A N N A #
     def pushDataToDb(self, path):
         my_graph = Graph()
         NauticalChart = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/NauticalChart") 
@@ -143,6 +145,8 @@ class MetadataUploadHandler(UploadHandler):
 class ProcessDataUploadHandler(UploadHandler):
     def __init__(self):
         super().__init__()
+
+    # E Z G I #
     def pushDataToDb(self, path):
         process_json = pd.read_json(path)
         norm_df=[]
@@ -177,6 +181,8 @@ class ProcessDataUploadHandler(UploadHandler):
 class QueryHandler(Handler):
     def __init__(self):
         super().__init__()
+
+    # E Z G I #
     def getById(self, id: str):
         endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
         query_objectId = """
@@ -238,7 +244,7 @@ class MetadataQueryHandler(QueryHandler):
     def __init__(self):
         super().__init__()
 
-    def getAllPeople(self):                    #also from JSON DON'T KNOW HOW  ??????????
+    def getAllPeople(self):                    
         endpoint = self.getDbPathOrUrl()
         query_getAllPeople = """
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
@@ -320,7 +326,7 @@ class MetadataQueryHandler(QueryHandler):
         ?object schema:author ?Authors.
         ?object schema:identifier ?id.
         }
-        """%(personId) #needs to be inside " "
+        """%(personId)
 
         df_sparql_getCulturalHeritageObjectsAuthoredBy = get(endpoint, query_getCulturalHeritageObjectsAuthoredBy, True)
         return df_sparql_getCulturalHeritageObjectsAuthoredBy.fillna("")
@@ -328,7 +334,8 @@ class MetadataQueryHandler(QueryHandler):
 class ProcessDataQueryHandler(QueryHandler):
     def __init__(self):
         super().__init__()
-  
+
+    # V A L E #
     def getAllActivities(self):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = "SELECT * FROM Acquisition"
@@ -381,6 +388,7 @@ class ProcessDataQueryHandler(QueryHandler):
             return df_union.fillna("")
 
 
+    # V I R G I #
     def getActivitiesUsingTool(self, partialName):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = 'SELECT * FROM Acquisition WHERE "tool" LIKE ?;'
@@ -451,18 +459,3 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union.fillna("")
         
-data = ProcessDataUploadHandler()
-data.setDbPathOrUrl("activities.db")
-data.pushDataToDb("process.json")
-
-process_query_handler = ProcessDataQueryHandler()
-process_query_handler.setDbPathOrUrl("activities.db")
-
-data2 = MetadataUploadHandler()
-data2.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-data2.pushDataToDb("meta.csv")
-
-metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-
-#pprint(metadata_query_handler.getAllCulturalHeritageObjects())
