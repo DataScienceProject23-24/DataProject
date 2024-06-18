@@ -170,6 +170,7 @@ class BasicMashup(object):
         return result
     
 
+
     def getAuthorsOfCulturalHeritageObject(self, id):           #checked! 
         result = []
         handler_list = self.metadataQuery
@@ -191,13 +192,15 @@ class BasicMashup(object):
     
 
     def getCulturalHeritageObjectsAuthoredBy(self, authorId):       #checked, error on Authors!!
-
         result = []
+        handler_list = self.metadataQuery
+        df_list = []
 
-        for handler in self.metadataQuery:
-            df = handler.getCulturalHeritageObjectsAuthoredBy(authorId) 
+        for handler in handler_list:
+            df_list.append(handler.getCulturalHeritageObjectsAuthoredBy(authorId)) #list of df
+            df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
-            for _, row in df.iterrows():
+            for _, row in df_union.iterrows():
 
                 type = row['type']
 
@@ -244,13 +247,15 @@ class BasicMashup(object):
         return result
     
     def getAllActivities(self):     #checked!
-        
         result = []
+        handler_list = self.processQuery
+        df_list = []
 
-        for handler in self.processQuery:
-            df = handler.getAllActivities()
+        for handler in handler_list:
+            df_list.append(handler.getAllActivities()) #list of df
+            df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
             
-            for _, row in df.iterrows():
+            for _, row in df_union.iterrows():
                 type, id = row["internalId"].split("-")
                 obj_refers_to = self.getEntityById(row["objectId"])
 
@@ -277,7 +282,6 @@ class BasicMashup(object):
         return result 
     
     def getActivitiesByResponsibleInstitution(self, partialName):       #checked, empty list???????????
-        
         result = []
         handler_list = self.processQuery
         df_list = []
@@ -289,7 +293,7 @@ class BasicMashup(object):
             for _, row in df_union.iterrows():
                 type, id = row["internalId"].split("-")
                 obj_refers_to = self.getEntityById(row["objectId"])
-
+                
                 if type == "acquisition":
                     object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to, technique=row['technique'])
                     result.append(object)
@@ -349,7 +353,7 @@ class BasicMashup(object):
         df_list = []
         for handler in handler_list:
             df_list.append(handler.getActivitiesUsingTool(partialName))
-        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
+        df_union = pd.concat(df_list, ignore_index=True)
         list_activities = []
         for idx, row in df_union.iterrows():
             activity_type = (row["internalId"].split("-"))[0]
@@ -372,7 +376,7 @@ class BasicMashup(object):
         df_list = []
         for handler in handler_list:
             df_list.append(handler.getActivitiesStartedAfter(date))
-        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
+        df_union = pd.concat(df_list, ignore_index=True)
         list_activities = []
         for idx, row in df_union.iterrows():
             activity_type = (row["internalId"].split("-"))[0]
@@ -395,7 +399,7 @@ class BasicMashup(object):
         df_list = []
         for handler in handler_list:
             df_list.append(handler.getActivitiesEndedBefore(date))
-        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
+        df_union = pd.concat(df_list, ignore_index=True)
         list_activities = []
         for idx, row in df_union.iterrows():
             activity_type = (row["internalId"].split("-"))[0]
@@ -418,7 +422,7 @@ class BasicMashup(object):
         df_list = []
         for handler in handler_list:
             df_list.append(handler.getAcquisitionsByTechnique(partialName))
-        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
+        df_union = pd.concat(df_list, ignore_index=True)
         list_acquisitions = []
         for idx, row in df_union.iterrows():
             obj_refers_to = self.getEntityById(row["objectId"])
@@ -434,15 +438,12 @@ class AdvancedMashup(BasicMashup):
         cultural_objects = self.getCulturalHeritageObjectsAuthoredBy(personId)
         id_list = []
         for object in cultural_objects:
-            id = object.id
-            id_list.append(id)   
+            id_list.append(object.id)   
         activities = self.getAllActivities()
         result_list = []
         for activity in activities:
-            object_id = (activity.refersTo()).id
-            for id in id_list:
-                if object_id == id:
-                    result_list.append(activity) 
+            if (activity.refersTo()).id in id_list:
+                result_list.append(activity) 
         return result_list       
 
 
@@ -479,8 +480,8 @@ class AdvancedMashup(BasicMashup):
                 #print(result)
         return result
     
-    def getAuthorsOfObjectsAcquiredInTimeFrame(self, start:str, end:str):
-        acquisition_start = [(i.refersTo()).id for i in self.getActivitiesStartedAfter(start) if type(i) is Acquisition]                      
+    def getAuthorsOfObjectsAcquiredInTimeFrame(self, start:str, end:str):                     #not working, empty list 
+        acquisition_start = [(i.refersTo()).id for i in self.getActivitiesStartedAfter(start) if type(i) is Acquisition]
         acquisition_end = [(i.refersTo()).id for i in self.getActivitiesEndedBefore(end) if type(i) is Acquisition]
         acquisition_list = [obj for obj in acquisition_start if obj in acquisition_end]
         authors_of_obj = set()
@@ -491,41 +492,33 @@ class AdvancedMashup(BasicMashup):
                     authors_of_obj.add((auth.id,auth.name))
         authors = [Person(id = auth[0],name=auth[1]) for auth in authors_of_obj]
         return authors
-    
 
+data = ProcessDataUploadHandler()
+data.setDbPathOrUrl("activities.db")
+data.pushDataToDb("process.json")
 
-u=ProcessDataUploadHandler()
-uu = MetadataUploadHandler()
-grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
-path = r"C:\Users\user\Documents\GitHub\DataProject\resources\process.json" 
-path_ = r"C:\Users\user\Documents\GitHub\DataProject\resources\meta.csv"
-u.setDbPathOrUrl("activities.db")
-u.pushDataToDb(path)
-uu.setDbPathOrUrl(grp_endpoint)
-uu.pushDataToDb(path_)
-q = ProcessDataQueryHandler()
-qq = MetadataQueryHandler()
-q.setDbPathOrUrl("activities.db")
-qq.setDbPathOrUrl(grp_endpoint)
-am = AdvancedMashup()
-am.addProcessHandler(q)
-am.addMetadataHandler(qq)
+process_query_handler = ProcessDataQueryHandler()
+process_query_handler.setDbPathOrUrl("activities.db")
 
-#obj = am.getAllActivities()
-#for i in obj:
-#    print(i.tool)
+data2 = MetadataUploadHandler()
+data2.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
+data2.pushDataToDb("meta.csv")
 
-#print(am.combineAuthorsOfObjects(qq.getById("4"),qq))
+metadata_query_handler = MetadataQueryHandler()
+metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
 
-obj = am.getActivitiesStartedAfter("2023-04-10")
-for i in obj:
-    print((i.refersTo()).id)
- 
-#i.id, i.title, i.date, i.owner, i.place
-#i.institute, i.person, i.tool, i.start, i.end, i.refers_to
+mashup = BasicMashup()
+mashup.addProcessHandler(process_query_handler)
+mashup.addMetadataHandler(metadata_query_handler)
 
+r = mashup.getCulturalHeritageObjectsAuthoredBy("VIAF:100190422")
+print(r)
+#print(len(r))
+for i in r:
+    print(i.id, i.title, i.date, i.owner, i.place)
+    authors = []
+    authors.append(i.hasAuthor)
+for a in authors:
+    print(a.id, a.name)        
 
-
-####### change refers_to in: getAllActivities, getActivitiesByResponsibleInstitution, getActivitiesByResponsiblePerson, 
-# ### getActivitiesOnObjectsAuthoredBy, getObjectsHandledByResponsiblePerson, getObjectsHandledByResponsibleInstitution
-
+#authors = row.get('authors', '')  # Ensure you get the 'authors' from the row
