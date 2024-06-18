@@ -21,9 +21,18 @@ class CulturalHeritageObject(IdentifiableEntity):
         self.owner = owner
         self.place = place
         self.hasAuthor = set()
-        auth = authors.split(";")
-        for i in auth:
-            self.hasAuthor.add(i)
+        if authors != "":
+            authors_list = authors.split(";")
+            auth = [i for i in authors_list]
+            if len(auth)>1:
+                for author in auth:
+                    author_name, author_id = author.split("-")
+                    self.hasAuthor.add(Person(id=author_id,name=author_name))
+            else:
+                author_name, author_id = auth[0].split("-")
+                self.hasAuthor.add(Person(id=author_id,name=author_name))
+        else:
+            self.hasAuthor.add(None)
 
     def getTitle(self):
         return self.title
@@ -36,15 +45,10 @@ class CulturalHeritageObject(IdentifiableEntity):
     
     def getAuthors(self):
         result_authors = []
-        if len(self.hasAuthor)>1:
-            for author in self.hasAuthor:
-                author_name, author_id = author.split("-")
-                result_authors.append(Person(id=author_id,name=author_name))
-        else:
-            author = self.hasAuthor.pop()
-            author_name, author_id = author.split("-")
-            result_authors.append(Person(id=author_id,name=author_name))
+        for author in self.hasAuthor:
+            result_authors.append(author)
         return result_authors
+
     
 
 class NauticalChart(CulturalHeritageObject):

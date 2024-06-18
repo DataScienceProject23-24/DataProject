@@ -27,12 +27,16 @@ class BasicMashup(object):
     
     def combineAuthorsOfObjects(self,df,handler):
         for idx, row in df.iterrows():
-            id = row["id"]
-            authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
-            authors_df.insert(loc=0,column="id",value=str(id))
-            authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
-            output = authors_df.groupby('id')['auth'].apply(';'.join)
-            df.at[idx,"Authors"] = str(output.iloc[0])
+            if row["Authors"] != "":
+                id = row["id"]
+                authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
+                authors_df.insert(loc=0,column="id",value=str(id))
+                authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
+                if authors_df.shape[0]>1:
+                    output = authors_df.groupby('id')['auth'].apply(';'.join)
+                    df.at[idx,"Authors"] = str(output.iloc[0])
+                else:
+                    df.at[idx,"Authors"] = authors_df.iloc[0,0]
         return df.drop_duplicates()
 
     def getEntityById(self, id):                                #checked for both person and obj ids 
@@ -165,7 +169,6 @@ class BasicMashup(object):
                 result.append(object)
         return result
     
-
 
     def getAuthorsOfCulturalHeritageObject(self, id):           #checked! 
         result = []
@@ -340,20 +343,21 @@ class BasicMashup(object):
         df_list = []
         for handler in handler_list:
             df_list.append(handler.getActivitiesUsingTool(partialName))
-        df_union = pd.concat(df_list, ignore_index=True)
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
         list_activities = []
         for idx, row in df_union.iterrows():
             activity_type = (row["internalId"].split("-"))[0]
+            obj_refers_to = self.getEntityById(row["objectId"])
             if activity_type == "acquisition":
-                entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"],technique=row["technique"])
+                entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to,technique=row["technique"])
             elif activity_type == "processing":
-                entry = Processing(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])   
+                entry = Processing(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)   
             elif activity_type == "modelling":
-                entry = Modelling(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
+                entry = Modelling(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)
             elif activity_type == "optimising":
-                entry = Optimising(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])    
+                entry = Optimising(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)    
             elif activity_type == "exporting":
-                entry = Exporting(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
+                entry = Exporting(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)
             list_activities.append(entry)
         return list_activities
     
@@ -362,20 +366,21 @@ class BasicMashup(object):
         df_list = []
         for handler in handler_list:
             df_list.append(handler.getActivitiesStartedAfter(date))
-        df_union = pd.concat(df_list, ignore_index=True)
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
         list_activities = []
         for idx, row in df_union.iterrows():
             activity_type = (row["internalId"].split("-"))[0]
+            obj_refers_to = self.getEntityById(row["objectId"])
             if activity_type == "acquisition":
-                entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"],technique=row["technique"])
+                entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to,technique=row["technique"])
             elif activity_type == "processing":
-                entry = Processing(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])   
+                entry = Processing(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)   
             elif activity_type == "modelling":
-                entry = Modelling(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
+                entry = Modelling(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)
             elif activity_type == "optimising":
-                entry = Optimising(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])    
+                entry = Optimising(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)    
             elif activity_type == "exporting":
-                entry = Exporting(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
+                entry = Exporting(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)
             list_activities.append(entry) 
         return list_activities
 
@@ -384,20 +389,21 @@ class BasicMashup(object):
         df_list = []
         for handler in handler_list:
             df_list.append(handler.getActivitiesEndedBefore(date))
-        df_union = pd.concat(df_list, ignore_index=True)
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
         list_activities = []
         for idx, row in df_union.iterrows():
             activity_type = (row["internalId"].split("-"))[0]
+            obj_refers_to = self.getEntityById(row["objectId"])
             if activity_type == "acquisition":
-                entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"],technique=row["technique"])
+                entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to,technique=row["technique"])
             elif activity_type == "processing":
-                entry = Processing(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])   
+                entry = Processing(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)   
             elif activity_type == "modelling":
-                entry = Modelling(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
+                entry = Modelling(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)
             elif activity_type == "optimising":
-                entry = Optimising(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])    
+                entry = Optimising(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)    
             elif activity_type == "exporting":
-                entry = Exporting(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"])
+                entry = Exporting(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to)
             list_activities.append(entry)
         return list_activities
     
@@ -406,10 +412,11 @@ class BasicMashup(object):
         df_list = []
         for handler in handler_list:
             df_list.append(handler.getAcquisitionsByTechnique(partialName))
-        df_union = pd.concat(df_list, ignore_index=True)
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
         list_acquisitions = []
         for idx, row in df_union.iterrows():
-            entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=row["objectId"],technique=row["technique"])
+            obj_refers_to = self.getEntityById(row["objectId"])
+            entry = Acquisition(institute=row["responsible institute"],person=row["responsible person"],tools=row["tool"],start=row["start date"],end=row["end date"],refers_to=obj_refers_to,technique=row["technique"])
             list_acquisitions.append(entry)
         return list_acquisitions
     
@@ -466,9 +473,9 @@ class AdvancedMashup(BasicMashup):
                 #print(result)
         return result
     
-    def getAuthorsOfObjectsAcquiredInTimeFrame(self, start:str, end:str):                     #not working, empty list 
-        acquisition_start = [i.refers_to for i in self.getActivitiesStartedAfter(start) if type(i) is Acquisition]
-        acquisition_end = [i.refers_to for i in self.getActivitiesEndedBefore(end) if type(i) is Acquisition]
+    def getAuthorsOfObjectsAcquiredInTimeFrame(self, start:str, end:str):
+        acquisition_start = [(i.refersTo()).id for i in self.getActivitiesStartedAfter(start) if type(i) is Acquisition]                      
+        acquisition_end = [(i.refersTo()).id for i in self.getActivitiesEndedBefore(end) if type(i) is Acquisition]
         acquisition_list = [obj for obj in acquisition_start if obj in acquisition_end]
         authors_of_obj = set()
         for i in acquisition_list:
@@ -484,8 +491,8 @@ class AdvancedMashup(BasicMashup):
 u=ProcessDataUploadHandler()
 uu = MetadataUploadHandler()
 grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
-path = r"C:\Users\annap\Documents\GitHub\DataProject\process.json" 
-path_ = r"C:\Users\annap\Documents\GitHub\DataProject\meta.csv"
+path = r"C:\Users\user\Documents\GitHub\DataProject\resources\process.json" 
+path_ = r"C:\Users\user\Documents\GitHub\DataProject\resources\meta.csv"
 u.setDbPathOrUrl("activities.db")
 u.pushDataToDb(path)
 uu.setDbPathOrUrl(grp_endpoint)
@@ -499,18 +506,22 @@ am.addProcessHandler(q)
 am.addMetadataHandler(qq)
 
 
- 
-#obj = am.getAuthorsOfObjectsAcquiredInTimeFrame("2023-08-09","2023-11-09") 
-#print(obj)
+#print(am.combineAuthorsOfObjects(qq.getById("4"),qq))
+
+#obj = am.getActivitiesStartedAfter("2023-04-10")
 #for i in obj:
-#    print(i.id)
+#    print(i.refers_to)
+ 
+obj = am.getAuthorsOfObjectsAcquiredInTimeFrame("2023-04-10","2023-11-08")
+
+for i in obj:
+    print(i.id)
 
 #i.id, i.title, i.date, i.owner, i.place
 #i.institute, i.person, i.tool, i.start, i.end, i.refers_to
 
 
 
-
-
-
+####### change refers_to in: getAllActivities, getActivitiesByResponsibleInstitution, getActivitiesByResponsiblePerson, 
+# ### getActivitiesOnObjectsAuthoredBy, getObjectsHandledByResponsiblePerson, getObjectsHandledByResponsibleInstitution
 

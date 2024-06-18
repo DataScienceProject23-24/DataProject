@@ -28,7 +28,7 @@ class MetadataUploadHandler(UploadHandler):
         my_graph = Graph()
         NauticalChart = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/NauticalChart") 
         ManuscriptPlate = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/ManuscriptPlate") 
-        ManuscriptVolume = URIRef("https://schema.org/Manuscript")
+        ManuscriptVolume = URIRef("https://schema.org/ManuscriptVolume")
         PrintedVolume = URIRef("https://schema.org/Book")
         PrintedMaterial = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/PrintedMaterial")
         Herbarium = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/Herbarium")
@@ -185,7 +185,7 @@ class QueryHandler(Handler):
             SELECT* WHERE{
             ?obj schema:identifier '%s'.
             ?obj schema:identifier ?id .  
-            VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
+            VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:ManuscriptVolume schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
             ?obj rdf:type ?type.
             ?obj schema:title ?title.
             ?obj schema:dateCreated ?date.
