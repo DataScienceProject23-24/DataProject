@@ -320,12 +320,13 @@ class BasicMashup(object):
                 result.append(object)  
         return result
     
-    def getActivitiesByResponsiblePerson(self, person):     #checked!
-        
+    def getActivitiesByResponsiblePerson(self, partialName):     #checked!
         result = []
-
-        for handler in self.processQuery:
-            df = handler.getActivitiesByResponsiblePerson(person)
+        handler_list = self.processQuery
+        df_list = []
+        
+        for handler in handler_list:
+            df_list.append(handler.getActivitiesByResponsiblePerson(partialName))
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
         for _, row in df_union.iterrows():
