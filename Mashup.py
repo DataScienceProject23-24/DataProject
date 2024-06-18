@@ -7,18 +7,18 @@ from DataModelClasses import Person, CulturalHeritageObject, Activity, Acquisiti
 class BasicMashup(object):
     # V I R G I #
     def __init__(self):
-        self.metadataQuery = []  #list of objects (handlers) of MetadataQueryHandler
-        self.processQuery = [] #list of objects ProcessDataQueryHandler
+        self.metadataQuery = []  
+        self.processQuery = [] 
 
     def cleanMetadataHandlers(self):
-        self.metadataQuery = [] #clean the list metadataQuery
+        self.metadataQuery = [] 
         return True
     
     def cleanProcessHandlers(self):
-        self.processQuery = [] #clean the list processQuery
+        self.processQuery = [] 
         return True
     
-    def addMetadataHandler(self, metadataHandler): #it append one object in the list?
+    def addMetadataHandler(self, metadataHandler): 
         self.metadataQuery.append(metadataHandler)   
         return True
     
@@ -43,15 +43,15 @@ class BasicMashup(object):
         return df.drop_duplicates()
 
     # A N N A #
-    def getEntityById(self, id):                                #checked for both person and obj ids 
+    def getEntityById(self, id):                                 
         handler_list = self.metadataQuery
         df_list = []
 
         for handler in handler_list:
             entity = handler.getById(id)
             entity_update = self.combineAuthorsOfObjects(entity,handler)
-            df_list.append(entity_update) #list of df
-        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("") #one big df
+            df_list.append(entity_update) 
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("") 
 
         for _,row in df_union.iterrows():
             if "authorName" in row:
@@ -106,14 +106,14 @@ class BasicMashup(object):
                 else:
                     return None
             
-    def getAllPeople(self):                     #checked!          
+    def getAllPeople(self):                              
         handler_list = self.metadataQuery
         df_list = []
         result = []
 
         for handler in handler_list:
-            df_list.append(handler.getAllPeople()) #list of df
-        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("") #one big df
+            df_list.append(handler.getAllPeople()) 
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("") 
 
         for _, row in df_union.iterrows():
             object = Person(id=row["authorId"],name = row['authorName'])
@@ -121,7 +121,7 @@ class BasicMashup(object):
         return result
     
 
-    def getAllCulturalHeritageObjects(self):        #checked, error with Authors!!!
+    def getAllCulturalHeritageObjects(self):        
         handler_list = self.metadataQuery
         df_list = []
         result = []
@@ -177,13 +177,13 @@ class BasicMashup(object):
     
 
 
-    def getAuthorsOfCulturalHeritageObject(self, id):           #checked! 
+    def getAuthorsOfCulturalHeritageObject(self, id):            
         result = []
         handler_list = self.metadataQuery
         df_list = []
         
         for handler in handler_list:
-            df_list.append(handler.getAuthorsOfCulturalHeritageObject(id)) #list of df
+            df_list.append(handler.getAuthorsOfCulturalHeritageObject(id)) 
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
         for _, row in df_union.iterrows():
@@ -196,7 +196,7 @@ class BasicMashup(object):
         return result
     
     # V A L E #
-    def getCulturalHeritageObjectsAuthoredBy(self, authorId):       #checked, error on Authors!!
+    def getCulturalHeritageObjectsAuthoredBy(self, authorId):       
         result = []
         handler_list = self.metadataQuery
         df_list = []
@@ -204,7 +204,7 @@ class BasicMashup(object):
         for handler in handler_list:
             df_objects = handler.getCulturalHeritageObjectsAuthoredBy(authorId)
             df_object_update = self.combineAuthorsOfObjects(df_objects,handler)
-            df_list.append(df_object_update) #list of df
+            df_list.append(df_object_update) 
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
         for _, row in df_union.iterrows():
@@ -253,13 +253,13 @@ class BasicMashup(object):
 
         return result
     
-    def getAllActivities(self):     #checked!
+    def getAllActivities(self):     
         result = []
         handler_list = self.processQuery
         df_list = []
 
         for handler in handler_list:
-            df_list.append(handler.getAllActivities()) #list of df
+            df_list.append(handler.getAllActivities()) 
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
         
         for _, row in df_union.iterrows():
@@ -288,13 +288,13 @@ class BasicMashup(object):
                 
         return result 
     
-    def getActivitiesByResponsibleInstitution(self, partialName):       #checked, empty list???????????
+    def getActivitiesByResponsibleInstitution(self, partialName):       
         result = []
         handler_list = self.processQuery
         df_list = []
 
         for handler in handler_list:
-            df_list.append(handler.getActivitiesByResponsibleInstitution(partialName)) #list of df
+            df_list.append(handler.getActivitiesByResponsibleInstitution(partialName)) 
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
         for _, row in df_union.iterrows():
@@ -321,7 +321,7 @@ class BasicMashup(object):
                 result.append(object)  
         return result
     
-    def getActivitiesByResponsiblePerson(self, partialName):     #checked!
+    def getActivitiesByResponsiblePerson(self, partialName):     
         result = []
         handler_list = self.processQuery
         df_list = []
@@ -357,7 +357,7 @@ class BasicMashup(object):
         return result
     
     # E Z G I #
-    def getActivitiesUsingTool(self, partialName:str):          #checked!
+    def getActivitiesUsingTool(self, partialName:str):          
         handler_list = self.processQuery
         df_list = []
         for handler in handler_list:
@@ -380,7 +380,7 @@ class BasicMashup(object):
             list_activities.append(entry)
         return list_activities
     
-    def getActivitiesStartedAfter(self, date:str):      #checked!
+    def getActivitiesStartedAfter(self, date:str):      
         handler_list = self.processQuery
         df_list = []
         for handler in handler_list:
@@ -403,7 +403,7 @@ class BasicMashup(object):
             list_activities.append(entry) 
         return list_activities
 
-    def getActivitiesEndedBefore(self, date:str):       #checked, but it also retrieve activities without data
+    def getActivitiesEndedBefore(self, date:str):       
         handler_list = self.processQuery
         df_list = []
         for handler in handler_list:
@@ -426,7 +426,7 @@ class BasicMashup(object):
             list_activities.append(entry)
         return list_activities
     
-    def getAcquisitionsByTechnique(self, partialName:str):          #checked! 
+    def getAcquisitionsByTechnique(self, partialName:str):           
         handler_list = self.processQuery
         df_list = []
         for handler in handler_list:
@@ -445,7 +445,7 @@ class AdvancedMashup(BasicMashup):
         super().__init__()
 
     # V A L E #
-    def getActivitiesOnObjectsAuthoredBy(self, personId):               #checked
+    def getActivitiesOnObjectsAuthoredBy(self, personId):               
         cultural_objects = self.getCulturalHeritageObjectsAuthoredBy(personId)
         id_list = []
         for object in cultural_objects:
@@ -459,7 +459,7 @@ class AdvancedMashup(BasicMashup):
 
 
     # V I R G I #
-    def getObjectsHandledByResponsiblePerson(self, name):              #checked!
+    def getObjectsHandledByResponsiblePerson(self, name):              
         activities = self.getActivitiesByResponsiblePerson(name)
         id_list = []
         for activity in activities:
@@ -477,7 +477,7 @@ class AdvancedMashup(BasicMashup):
 
 
     # A N N A #
-    def getObjectsHandledByResponsibleInstitution(self, institution):       #checked, empty list as getActivitiesByResponsibleInstitution method
+    def getObjectsHandledByResponsibleInstitution(self, institution):       
         activities = self.getActivitiesByResponsibleInstitution(institution)
         id_list = []
         for activity in activities:
