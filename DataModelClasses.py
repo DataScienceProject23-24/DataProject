@@ -1,3 +1,4 @@
+# E Z G I #
 class IdentifiableEntity(object):
     def __init__(self, id):
         self.id = id
@@ -12,7 +13,7 @@ class Person(IdentifiableEntity):
     def getName(self):
         return self.name
 
-
+# V I R G I #
 class CulturalHeritageObject(IdentifiableEntity):
     def __init__(self, id, title, date, owner, place, authors):
         super().__init__(id)
@@ -82,6 +83,7 @@ class Map(CulturalHeritageObject):
     pass
     
 
+# V A L E #
 class Activity(object):
     def __init__(self, institute, person, tools, start, end, refers_to):
         self.institute = institute
