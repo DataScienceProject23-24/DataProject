@@ -38,7 +38,10 @@ class CulturalHeritageObject(IdentifiableEntity):
     def getTitle(self):
         return self.title
     def getDate(self):
-        return self.date
+        if self.date == "":
+            return None
+        else:
+            return self.date
     def getOwner(self):
         return self.owner
     def getPlace(self):
@@ -100,7 +103,10 @@ class Activity(object):
         return self.institute
     
     def getResponsiblePerson(self):
-        return self.person
+        if self.person == "":
+            return None
+        else:
+            return self.person
 
     def getTools(self):
         result_tools = set()
@@ -109,10 +115,16 @@ class Activity(object):
         return result_tools
     
     def getStartDate(self):
-        return self.start
+        if self.start == "":
+            return None
+        else:
+            return self.start
 
     def getEndDate(self):
-        return self.end
+        if self.end == "":
+            return None
+        else:
+            return self.end
 
     def refersTo (self):
         return self.refers_to
