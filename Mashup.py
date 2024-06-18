@@ -26,17 +26,18 @@ class BasicMashup(object):
         return True 
     
     def combineAuthorsOfObjects(self,df,handler):
-        for idx, row in df.iterrows():
-            if row["Authors"] != "":
-                id = row["id"]
-                authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
-                authors_df.insert(loc=0,column="id",value=str(id))
-                authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
-                if authors_df.shape[0]>1:
-                    output = authors_df.groupby('id')['auth'].apply(';'.join)
-                    df.at[idx,"Authors"] = str(output.iloc[0])
-                else:
-                    df.at[idx,"Authors"] = authors_df.iloc[0,0]
+        if "Authors" in df.columns:
+            for idx, row in df.iterrows():
+                if row["Authors"] != "":
+                    id = row["id"]
+                    authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
+                    authors_df.insert(loc=0,column="id",value=str(id))
+                    authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
+                    if authors_df.shape[0]>1:
+                        output = authors_df.groupby('id')['auth'].apply(';'.join)
+                        df.at[idx,"Authors"] = str(output.iloc[0])
+                    else:
+                        df.at[idx,"Authors"] = authors_df.iloc[0,0]
         return df.drop_duplicates()
 
     def getEntityById(self, id):                                #checked for both person and obj ids 
@@ -123,7 +124,9 @@ class BasicMashup(object):
         result = []
 
         for handler in handler_list:
-            df_list.append(handler.getAllCulturalHeritageObjects()) #list of df
+            df_objects = handler.getAllCulturalHeritageObjects()
+            df_object_update = self.combineAuthorsOfObjects(df_objects,handler)
+            df_list.append(df_object_update)
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
         for _, row in df_union.iterrows():
@@ -463,21 +466,19 @@ class AdvancedMashup(BasicMashup):
 
         return result
 
-
+    ########3
     def getObjectsHandledByResponsibleInstitution(self, institution):       #checked, empty list as getActivitiesByResponsibleInstitution method
         activities = self.getActivitiesByResponsibleInstitution(institution)
         id_list = []
         for activity in activities:
             object_id = (activity.refersTo()).id
             id_list.append(object_id)
-        print(id_list)
     
         cultural_objects = self.getAllCulturalHeritageObjects()
         result = []
         for obj in cultural_objects:
             if obj.id in id_list:
                 result.append(obj)
-                #print(result)
         return result
     
     def getAuthorsOfObjectsAcquiredInTimeFrame(self, start:str, end:str):                     #not working, empty list 
@@ -493,32 +494,31 @@ class AdvancedMashup(BasicMashup):
         authors = [Person(id = auth[0],name=auth[1]) for auth in authors_of_obj]
         return authors
 
-data = ProcessDataUploadHandler()
-data.setDbPathOrUrl("activities.db")
-data.pushDataToDb("process.json")
 
-process_query_handler = ProcessDataQueryHandler()
-process_query_handler.setDbPathOrUrl("activities.db")
+u=ProcessDataUploadHandler()
+uu = MetadataUploadHandler()
+grp_endpoint = "http://127.0.0.1:9999/blazegraph/sparql"
+path = r"C:\Users\user\Documents\GitHub\DataProject\process.json"
+path_ = r"C:\Users\user\Documents\GitHub\DataProject\meta.csv"
+u.setDbPathOrUrl("activities.db")
+u.pushDataToDb(path)
+uu.setDbPathOrUrl(grp_endpoint)
+uu.pushDataToDb(path_)
+q = ProcessDataQueryHandler()
+qq = MetadataQueryHandler()
+q.setDbPathOrUrl("activities.db")
+qq.setDbPathOrUrl(grp_endpoint)
+am = AdvancedMashup()
+am.addProcessHandler(q)
+am.addMetadataHandler(qq)
 
-data2 = MetadataUploadHandler()
-data2.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-data2.pushDataToDb("meta.csv")
+#obj = am.getAllActivities()
+#for i in obj:
+#    print(i.institute, i.person, i.tool, i.start, i.end, i.refers_to)
 
-metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-
-mashup = BasicMashup()
-mashup.addProcessHandler(process_query_handler)
-mashup.addMetadataHandler(metadata_query_handler)
-
-r = mashup.getCulturalHeritageObjectsAuthoredBy("VIAF:100190422")
-print(r)
-#print(len(r))
-for i in r:
-    print(i.id, i.title, i.date, i.owner, i.place)
-    authors = []
-    authors.append(i.hasAuthor)
-for a in authors:
-    print(a.id, a.name)        
-
-#authors = row.get('authors', '')  # Ensure you get the 'authors' from the row
+#print(qq.getById("ULAN:500114874"))
+aa = am.getObjectsHandledByResponsibleInstitution("Philology")
+for i in aa:
+    print(i.id)
+#print(qq.getAuthorsOfCulturalHeritageObject("33"))
+#print(obj.id, obj.date, obj.title)

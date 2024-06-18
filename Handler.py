@@ -192,13 +192,14 @@ class QueryHandler(Handler):
             ?obj schema:identifier ?id .  
             VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:ManuscriptVolume schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
             ?obj rdf:type ?type.
-            ?obj schema:title ?title.
-            ?obj schema:dateCreated ?date.
             ?obj schema:acquiredFrom ?owner.
             ?obj schema:location ?place.
+            ?obj schema:title ?title.
             OPTIONAL { SELECT * WHERE {
               ?authorId schema:name ?Authors.
-              ?obj schema:author ?authorId.}
+              ?obj schema:author ?authorId.
+              ?obj schema:dateCreated ?date.
+                }
               }
             }
         }
@@ -263,18 +264,21 @@ class MetadataQueryHandler(QueryHandler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT *
+        SELECT ?id ?type ?title ?date ?owner ?place ?Authors
         WHERE {
-          ?object rdf:type ?type.
-          ?object schema:identifier ?id.
-          ?object schema:title ?title.
-          ?object schema:dateCreated ?date.
-          ?object schema:acquiredFrom ?owner.
-          ?object schema:location ?place.
-          ?object schema:author ?Authors.
-       
+        ?obj schema:identifier ?id .  
+        ?obj rdf:type ?type.
+        ?obj schema:acquiredFrom ?owner.
+        ?obj schema:location ?place.
+        ?obj schema:title ?title.
+        OPTIONAL {
+            ?obj schema:dateCreated ?date.
         }
-
+        OPTIONAL {
+            ?authorId schema:name ?Authors.
+            ?obj schema:author ?authorId.
+            }
+        }
         """
         df_sparql_getAllCulturalHeritageObjects = get(endpoint, query_getAllCulturalHeritageObjects, True)
         return df_sparql_getAllCulturalHeritageObjects.fillna("")
@@ -314,11 +318,13 @@ class MetadataQueryHandler(QueryHandler):
         ?object schema:author ?author .
         ?object rdf:type ?type.
         ?object schema:title ?title.
-        ?object schema:dateCreated ?date.
         ?object schema:acquiredFrom ?owner.
         ?object schema:location ?place. 
         ?object schema:author ?Authors.
         ?object schema:identifier ?id.
+        OPTIONAL {
+    		?object schema:dateCreated ?date.
+  			}
         }
         """%(personId) #needs to be inside " "
 
@@ -451,18 +457,3 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union.fillna("")
         
-data = ProcessDataUploadHandler()
-data.setDbPathOrUrl("activities.db")
-data.pushDataToDb("process.json")
-
-process_query_handler = ProcessDataQueryHandler()
-process_query_handler.setDbPathOrUrl("activities.db")
-
-data2 = MetadataUploadHandler()
-data2.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-data2.pushDataToDb("meta.csv")
-
-metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-
-#pprint(metadata_query_handler.getAllCulturalHeritageObjects())
