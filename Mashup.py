@@ -27,18 +27,18 @@ class BasicMashup(object):
         return True 
 
     # E Z G I #
-    def combineAuthorsOfObjects(self,df,handler):
-        for idx, row in df.iterrows():
-            if row["Authors"] != "":
-                id = row["id"]
-                authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
-                authors_df.insert(loc=0,column="id",value=str(id))
-                authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
-                if authors_df.shape[0]>1:
-                    output = authors_df.groupby('id')['auth'].apply(';'.join)
-                    df.at[idx,"Authors"] = str(output.iloc[0])
-                else:
-                    df.at[idx,"Authors"] = authors_df.iloc[0,0]
+    if "Authors" in df.columns:
+            for idx, row in df.iterrows():
+                if row["Authors"] != "":
+                    id = row["id"]
+                    authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
+                    authors_df.insert(loc=0,column="id",value=str(id))
+                    authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
+                    if authors_df.shape[0]>1:
+                        output = authors_df.groupby('id')['auth'].apply(';'.join)
+                        df.at[idx,"Authors"] = str(output.iloc[0])
+                    else:
+                        df.at[idx,"Authors"] = authors_df.iloc[0,0]
         return df.drop_duplicates()
 
     # A N N A #
