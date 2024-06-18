@@ -1,3 +1,4 @@
+# E Z G I #
 class IdentifiableEntity(object):
     def __init__(self, id):
         self.id = id
@@ -6,26 +7,34 @@ class IdentifiableEntity(object):
 
 
 class Person(IdentifiableEntity):
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, id, name):
         super().__init__(id)
+        self.name = name
     def getName(self):
         return self.name
 
-
+# V I R G I #
 class CulturalHeritageObject(IdentifiableEntity):
-    def __init__(self, title, date, owner, place, authors):
+    def __init__(self, id, title, date, owner, place, authors):
+        super().__init__(id)
         self.title = title
         self.date = date
         self.owner = owner
         self.place = place
         self.hasAuthor = set()
-        for author in authors:
-            self.hasAuthor.add(author)
-        
-        super().__init__(id)
+        if authors != "":
+            authors_list = authors.split(";")
+            auth = [i for i in authors_list]
+            if len(auth)>1:
+                for author in auth:
+                    author_name, author_id = author.split("-")
+                    self.hasAuthor.add(Person(id=author_id,name=author_name))
+            else:
+                author_name, author_id = auth[0].split("-")
+                self.hasAuthor.add(Person(id=author_id,name=author_name))
+        else:
+            self.hasAuthor.add(None)
 
-    
     def getTitle(self):
         return self.title
     def getDate(self):
@@ -39,57 +48,49 @@ class CulturalHeritageObject(IdentifiableEntity):
         result_authors = []
         for author in self.hasAuthor:
             result_authors.append(author)
-        result_authors.sort()
         return result_authors
+
     
 
 class NauticalChart(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class ManuscriptPlate(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class ManuscriptVolume(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class PrintedVolume(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class PrintedMaterial(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Herbarium(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Specimen(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Painting(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Model(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
 
 class Map(CulturalHeritageObject):
-    def __init__(self,title, date, owner, place, authors):
-        super().__init__(id, title, date, owner, place, authors)
+    pass
     
 
+# V A L E #
 class Activity(object):
     def __init__(self, institute, person, tools, start, end, refers_to):
         self.institute = institute
         self.person = person 
         self.tool = set()
-        for Tool in tools:
+        Tools = tools.split(", ")
+        for Tool in Tools:
             self.tool.add(Tool)
         self.start = start
         self.end = end
@@ -125,18 +126,13 @@ class Acquisition(Activity):
         return self.technique
 
 class Processing(Activity):
-    def __init__(self, institute, person, tools, start, end, refers_to):
-        super().__init__(institute, person, tools, start, end, refers_to)
+    pass
 
 class Modelling(Activity):
-    def __init__(self, institute, person, tools, start, end, refers_to):
-        super().__init__(institute, person, tools, start, end, refers_to)
+    pass
 
-class Optimizing(Activity):
-    def __init__(self, institute, person, tools, start, end, refers_to):
-        super().__init__(institute, person, tools, start, end, refers_to)
+class Optimising(Activity):
+    pass
 
 class Exporting(Activity):
-    def __init__(self, institute, person, tools, start, end, refers_to):
-        super().__init__(institute, person, tools, start, end, refers_to)
-        
+    pass
