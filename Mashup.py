@@ -5,6 +5,7 @@ from Handler import MetadataUploadHandler, ProcessDataUploadHandler, MetadataQue
 from DataModelClasses import Person, CulturalHeritageObject, Activity, Acquisition, Processing, Modelling, Optimising, Exporting, NauticalChart, ManuscriptPlate, ManuscriptVolume, PrintedVolume, PrintedMaterial, Herbarium, Specimen, Painting, Model, Map
 
 class BasicMashup(object):
+    # V I R G I #
     def __init__(self):
         self.metadataQuery = []  #list of objects (handlers) of MetadataQueryHandler
         self.processQuery = [] #list of objects ProcessDataQueryHandler
@@ -24,7 +25,8 @@ class BasicMashup(object):
     def addProcessHandler(self, processHandler):
         self.processQuery.append(processHandler)
         return True 
-    
+
+    # E Z G I #
     def combineAuthorsOfObjects(self,df,handler):
         for idx, row in df.iterrows():
             if row["Authors"] != "":
@@ -39,6 +41,7 @@ class BasicMashup(object):
                     df.at[idx,"Authors"] = authors_df.iloc[0,0]
         return df.drop_duplicates()
 
+    # A N N A #
     def getEntityById(self, id):                                #checked for both person and obj ids 
         handler_list = self.metadataQuery
         df_list = []
@@ -123,7 +126,9 @@ class BasicMashup(object):
         result = []
 
         for handler in handler_list:
-            df_list.append(handler.getAllCulturalHeritageObjects()) #list of df
+            df_objects = handler.getAllCulturalHeritageObjects()
+            df_object_update = self.combineAuthorsOfObjects(df_objects,handler)
+            df_list.append(df_object_update) #list of df
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
         for _, row in df_union.iterrows():
@@ -176,7 +181,6 @@ class BasicMashup(object):
         handler_list = self.metadataQuery
         df_list = []
         
-
         for handler in handler_list:
             df_list.append(handler.getAuthorsOfCulturalHeritageObject(id)) #list of df
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
@@ -190,59 +194,61 @@ class BasicMashup(object):
                 return(None)
         return result
     
-
+    # V A L E #
     def getCulturalHeritageObjectsAuthoredBy(self, authorId):       #checked, error on Authors!!
         result = []
         handler_list = self.metadataQuery
         df_list = []
 
         for handler in handler_list:
-            df_list.append(handler.getCulturalHeritageObjectsAuthoredBy(authorId)) #list of df
-            df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
+            df_objects = handler.getCulturalHeritageObjectsAuthoredBy(authorId)
+            df_object_update = self.combineAuthorsOfObjects(df_objects,handler)
+            df_list.append(df_object_update) #list of df
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
-            for _, row in df_union.iterrows():
+        for _, row in df_union.iterrows():
 
-                type = row['type']
+            type = row['type']
 
-                if "NauticalChart" in type:
-                    object = NauticalChart(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
-                    result.append(object)
+            if "NauticalChart" in type:
+                object = NauticalChart(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                result.append(object)
 
-                elif "ManuscriptPlate" in type:
-                    object = ManuscriptPlate(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
-                    result.append(object) 
+            elif "ManuscriptPlate" in type:
+                object = ManuscriptPlate(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
+                result.append(object) 
 
-                elif "ManuscriptVolume" in type:
-                    object = ManuscriptVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
-                    result.append(object)
+            elif "ManuscriptVolume" in type:
+                object = ManuscriptVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                result.append(object)
 
-                elif "Book" in type:
-                    object = PrintedVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
-                    result.append(object)
+            elif "Book" in type:
+                object = PrintedVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                result.append(object)
 
-                elif "PrintedMaterial" in type:
-                    object = PrintedMaterial(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
-                    result.append(object)
+            elif "PrintedMaterial" in type:
+                object = PrintedMaterial(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                result.append(object)
 
-                elif "Herbarium" in type:
-                    object = Herbarium(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
-                    result.append(object)
+            elif "Herbarium" in type:
+                object = Herbarium(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                result.append(object)
 
-                elif "Specimen" in type:
-                    object = Specimen(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
-                    result.append(object)
+            elif "Specimen" in type:
+                object = Specimen(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                result.append(object)
 
-                elif "Painting" in type:
-                    object = Painting(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
-                    result.append(object)
+            elif "Painting" in type:
+                object = Painting(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                result.append(object)
 
-                elif "Model" in type:
-                    object = Model(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
-                    result.append(object)
+            elif "Model" in type:
+                object = Model(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                result.append(object)
 
-                elif "Map" in type:
-                    object = Map(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
-                    result.append(object)    
+            elif "Map" in type:
+                object = Map(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                result.append(object)    
 
         return result
     
@@ -253,31 +259,31 @@ class BasicMashup(object):
 
         for handler in handler_list:
             df_list.append(handler.getAllActivities()) #list of df
-            df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
+        
+        for _, row in df_union.iterrows():
+            type, id = row["internalId"].split("-")
+            obj_refers_to = self.getEntityById(row["objectId"])
+
+            if type == "acquisition":
+                object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to, technique=row['technique'])
+                result.append(object)
+
+            elif type == "processing":
+                object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)
             
-            for _, row in df_union.iterrows():
-                type, id = row["internalId"].split("-")
-                obj_refers_to = self.getEntityById(row["objectId"])
+            elif type == "modelling":
+                object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)
+            
+            elif type == "optimising":
+                object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)
 
-                if type == "acquisition":
-                    object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to, technique=row['technique'])
-                    result.append(object)
-
-                elif type == "processing":
-                    object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)
-                
-                elif type == "modelling":
-                    object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)
-                
-                elif type == "optimising":
-                    object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)
-
-                elif type == "exporting":
-                    object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)    
+            elif type == "exporting":
+                object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)    
                 
         return result 
     
@@ -288,30 +294,30 @@ class BasicMashup(object):
 
         for handler in handler_list:
             df_list.append(handler.getActivitiesByResponsibleInstitution(partialName)) #list of df
-            df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
-            for _, row in df_union.iterrows():
-                type, id = row["internalId"].split("-")
-                obj_refers_to = self.getEntityById(row["objectId"])
-                
-                if type == "acquisition":
-                    object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to, technique=row['technique'])
-                    result.append(object)
+        for _, row in df_union.iterrows():
+            type, id = row["internalId"].split("-")
+            obj_refers_to = self.getEntityById(row["objectId"])
+            
+            if type == "acquisition":
+                object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to, technique=row['technique'])
+                result.append(object)
 
-                elif type == "processing":
-                    object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)
-                
-                elif type == "modelling":
-                    object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)
-                elif type == "optimising":
-                    object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)
+            elif type == "processing":
+                object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)
+            
+            elif type == "modelling":
+                object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)
+            elif type == "optimising":
+                object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)
 
-                elif type == "exporting":
-                    object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)  
+            elif type == "exporting":
+                object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)  
         return result
     
     def getActivitiesByResponsiblePerson(self, person):     #checked!
@@ -320,34 +326,35 @@ class BasicMashup(object):
 
         for handler in self.processQuery:
             df = handler.getActivitiesByResponsiblePerson(person)
+        df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
-            for _, row in df.iterrows():
-                type, id = row["internalId"].split("-")
-                obj_refers_to = self.getEntityById(row["objectId"])
+        for _, row in df_union.iterrows():
+            type, id = row["internalId"].split("-")
+            obj_refers_to = self.getEntityById(row["objectId"])
 
-                if type == "acquisition":
-                    object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to, technique=row['technique'])
-                    result.append(object)
+            if type == "acquisition":
+                object = Acquisition(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to, technique=row['technique'])
+                result.append(object)
 
-                elif type == "processing":
-                    object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)
-                
-                elif type == "modelling":
-                    object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)
-                
-                elif type == "optimising":
-                    object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)
+            elif type == "processing":
+                object = Processing(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)
+            
+            elif type == "modelling":
+                object = Modelling(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)
+            
+            elif type == "optimising":
+                object = Optimising(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)
 
-                elif type == "exporting":
-                    object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
-                    result.append(object)    
+            elif type == "exporting":
+                object = Exporting(institute=row['responsible institute'], person=row['responsible person'], tools=row['tool'], start=row['start date'], end=row['end date'], refers_to=obj_refers_to)
+                result.append(object)    
             
         return result
     
-    
+    # E Z G I #
     def getActivitiesUsingTool(self, partialName:str):          #checked!
         handler_list = self.processQuery
         df_list = []
@@ -434,7 +441,9 @@ class BasicMashup(object):
 class AdvancedMashup(BasicMashup): 
     def __init__(self):
         super().__init__()
-    def getActivitiesOnObjectsAuthoredBy(self, personId):               #checked, special case for acquisition to retrieve also the technique ()
+
+    # V A L E #
+    def getActivitiesOnObjectsAuthoredBy(self, personId):               #checked
         cultural_objects = self.getCulturalHeritageObjectsAuthoredBy(personId)
         id_list = []
         for object in cultural_objects:
@@ -447,6 +456,7 @@ class AdvancedMashup(BasicMashup):
         return result_list       
 
 
+    # V I R G I #
     def getObjectsHandledByResponsiblePerson(self, name):              #checked!
         activities = self.getActivitiesByResponsiblePerson(name)
         id_list = []
@@ -464,23 +474,23 @@ class AdvancedMashup(BasicMashup):
         return result
 
 
+    # A N N A #
     def getObjectsHandledByResponsibleInstitution(self, institution):       #checked, empty list as getActivitiesByResponsibleInstitution method
         activities = self.getActivitiesByResponsibleInstitution(institution)
         id_list = []
         for activity in activities:
             object_id = (activity.refersTo()).id
             id_list.append(object_id)
-        print(id_list)
     
         cultural_objects = self.getAllCulturalHeritageObjects()
         result = []
         for obj in cultural_objects:
             if obj.id in id_list:
                 result.append(obj)
-                #print(result)
         return result
-    
-    def getAuthorsOfObjectsAcquiredInTimeFrame(self, start:str, end:str):                     #not working, empty list 
+
+    # E Z G I #
+    def getAuthorsOfObjectsAcquiredInTimeFrame(self, start:str, end:str):                     
         acquisition_start = [(i.refersTo()).id for i in self.getActivitiesStartedAfter(start) if type(i) is Acquisition]
         acquisition_end = [(i.refersTo()).id for i in self.getActivitiesEndedBefore(end) if type(i) is Acquisition]
         acquisition_list = [obj for obj in acquisition_start if obj in acquisition_end]
@@ -493,32 +503,3 @@ class AdvancedMashup(BasicMashup):
         authors = [Person(id = auth[0],name=auth[1]) for auth in authors_of_obj]
         return authors
 
-data = ProcessDataUploadHandler()
-data.setDbPathOrUrl("activities.db")
-data.pushDataToDb("process.json")
-
-process_query_handler = ProcessDataQueryHandler()
-process_query_handler.setDbPathOrUrl("activities.db")
-
-data2 = MetadataUploadHandler()
-data2.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-data2.pushDataToDb("meta.csv")
-
-metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://192.168.1.169:9999/blazegraph/sparql")
-
-mashup = BasicMashup()
-mashup.addProcessHandler(process_query_handler)
-mashup.addMetadataHandler(metadata_query_handler)
-
-r = mashup.getCulturalHeritageObjectsAuthoredBy("VIAF:100190422")
-print(r)
-#print(len(r))
-for i in r:
-    print(i.id, i.title, i.date, i.owner, i.place)
-    authors = []
-    authors.append(i.hasAuthor)
-for a in authors:
-    print(a.id, a.name)        
-
-#authors = row.get('authors', '')  # Ensure you get the 'authors' from the row
