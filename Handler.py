@@ -189,25 +189,21 @@ class QueryHandler(Handler):
         PREFIX res: <https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
-
+        
         SELECT ?id ?type ?title ?date ?owner ?place ?Authors
-        WHERE
-            {
-            SELECT* WHERE{
-            ?obj schema:identifier '%s'.
-            ?obj schema:identifier ?id .  
-            VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:ManuscriptVolume schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
-            ?obj rdf:type ?type.
-            ?obj schema:title ?title.
-            ?obj schema:acquiredFrom ?owner.
-            ?obj schema:location ?place.
-            OPTIONAL { SELECT * WHERE {
-              ?authorId schema:name ?Authors.
-              ?obj schema:author ?authorId.
-              ?obj schema:dateCreated ?date.
-                  }
-              }
-            }
+        WHERE {
+          ?obj schema:identifier '%s' .  
+          ?obj rdf:type ?type.
+          ?obj schema:acquiredFrom ?owner.
+          ?obj schema:location ?place.
+          ?obj schema:title ?title.
+          OPTIONAL {
+            ?obj schema:dateCreated ?date.
+          }
+          OPTIONAL {
+            ?authorId schema:name ?Authors.
+            ?obj schema:author ?authorId.
+          }
         }
         """%(id)
 
@@ -270,16 +266,20 @@ class MetadataQueryHandler(QueryHandler):
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX schema: <https://schema.org/>
 
-        SELECT *
+        SELECT ?id ?type ?title ?date ?owner ?place ?Authors
         WHERE {
-          ?object rdf:type ?type.
-          ?object schema:identifier ?id.
-          ?object schema:title ?title.
-          ?object schema:dateCreated ?date.
-          ?object schema:acquiredFrom ?owner.
-          ?object schema:location ?place.
-          ?object schema:author ?Authors.
-       
+        ?obj schema:identifier ?id .  
+        ?obj rdf:type ?type.
+        ?obj schema:acquiredFrom ?owner.
+        ?obj schema:location ?place.
+        ?obj schema:title ?title.
+        OPTIONAL {
+            ?obj schema:dateCreated ?date.
+        }
+        OPTIONAL {
+            ?authorId schema:name ?Authors.
+            ?obj schema:author ?authorId.
+            }
         }
 
         """
@@ -321,11 +321,13 @@ class MetadataQueryHandler(QueryHandler):
         ?object schema:author ?author .
         ?object rdf:type ?type.
         ?object schema:title ?title.
-        ?object schema:dateCreated ?date.
         ?object schema:acquiredFrom ?owner.
         ?object schema:location ?place. 
         ?object schema:author ?Authors.
         ?object schema:identifier ?id.
+        OPTIONAL {
+    		?object schema:dateCreated ?date.
+  			}
         }
         """%(personId)
 
