@@ -87,7 +87,7 @@ class Activity(object):
         self.institute = institute
         self.person = person 
         self.tool = set()
-        Tools = tools.split(",")
+        Tools = tools.split(", ")
         for Tool in Tools:
             self.tool.add(Tool)
         self.start = start
