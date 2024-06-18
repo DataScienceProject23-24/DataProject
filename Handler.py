@@ -149,12 +149,18 @@ class ProcessDataUploadHandler(UploadHandler):
         norm_df=[]
         cols = ["acquisition","processing","modelling","optimising","exporting"]
         for col in cols:
-            norm = pd.json_normalize(process_json[col])
+            norm = pd.json_normalize(process_json[col]).fillna("")
             object_ids = process_json["object id"]
-            norm["tool"] = norm["tool"].astype(str)
             internal_id = []
             for idx, row in norm.iterrows():
                 internal_id.append(col + "-" + str(idx))
+                if len(row["tool"])>1:
+                    tools = ', '.join(row["tool"])
+                    norm.at[idx,"tool"] = tools
+                elif len(row["tool"])==1:
+                    norm.at[idx,"tool"] = str(row["tool"][0])
+                else:
+                    norm.at[idx,"tool"] = ""
             norm.insert(loc=1, column='internalId', value=internal_id)
             norm.insert(loc=0, column='objectId', value=object_ids)
             norm_df.append(norm)
