@@ -522,9 +522,10 @@ mashup = AdvancedMashup()
 mashup.addProcessHandler(process_query_handler)
 mashup.addMetadataHandler(metadata_query_handler)
 
-r = mashup.getAuthorsOfObjectsAcquiredInTimeFrame("2023-04-17", "2023-06-10")
+r = mashup.getObjectsHandledByResponsibleInstitution("Council")
 print(r)
 print(len(r))
 for i in r:
-    print(i.id, i.name)
-    # print(i.institute, i.person, i.tool, i.start, i.end, i.refers_to)
+    #print(i.id, i.name)
+    #print(i.institute, i.person, i.tool, i.start, i.end, i.refers_to)
+    print(i.id, i.title, i.date, i.owner, i.place, i.hasAuthor)
