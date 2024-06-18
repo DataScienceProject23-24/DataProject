@@ -324,7 +324,7 @@ class BasicMashup(object):
         result = []
         handler_list = self.processQuery
         df_list = []
-
+        
         for handler in handler_list:
             df_list.append(handler.getActivitiesByResponsiblePerson(partialName))
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
@@ -522,8 +522,9 @@ mashup = AdvancedMashup()
 mashup.addProcessHandler(process_query_handler)
 mashup.addMetadataHandler(metadata_query_handler)
 
-r = mashup.getActivitiesOnObjectsAuthoredBy("VIAF:100190422")
+r = mashup.getAuthorsOfObjectsAcquiredInTimeFrame("2023-04-17", "2023-06-10")
 print(r)
 print(len(r))
 for i in r:
-    print(i.institute, i.person, i.tool, i.start, i.end, i.refers_to)
+    print(i.id, i.name)
+    # print(i.institute, i.person, i.tool, i.start, i.end, i.refers_to)
