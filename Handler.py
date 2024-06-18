@@ -198,13 +198,14 @@ class QueryHandler(Handler):
             ?obj schema:identifier ?id .  
             VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:ManuscriptVolume schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
             ?obj rdf:type ?type.
-            ?obj schema:title ?title.
-            ?obj schema:dateCreated ?date.
-            ?obj schema:acquiredFrom ?owner.
-            ?obj schema:location ?place.
             OPTIONAL { SELECT * WHERE {
               ?authorId schema:name ?Authors.
-              ?obj schema:author ?authorId.}
+              ?obj schema:author ?authorId.
+              ?obj schema:title ?title.
+              ?obj schema:dateCreated ?date.
+              ?obj schema:acquiredFrom ?owner.
+              ?obj schema:location ?place.
+                }
               }
             }
         }

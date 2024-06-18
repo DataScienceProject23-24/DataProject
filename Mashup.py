@@ -320,12 +320,13 @@ class BasicMashup(object):
                 result.append(object)  
         return result
     
-    def getActivitiesByResponsiblePerson(self, person):     #checked!
-        
+    def getActivitiesByResponsiblePerson(self, partialName):     #checked!
         result = []
+        handler_list = self.processQuery
+        df_list = []
 
-        for handler in self.processQuery:
-            df = handler.getActivitiesByResponsiblePerson(person)
+        for handler in handler_list:
+            df_list.append(handler.getActivitiesByResponsiblePerson(partialName))
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
         for _, row in df_union.iterrows():
@@ -503,3 +504,26 @@ class AdvancedMashup(BasicMashup):
         authors = [Person(id = auth[0],name=auth[1]) for auth in authors_of_obj]
         return authors
 
+data = ProcessDataUploadHandler()
+data.setDbPathOrUrl("activities.db")
+data.pushDataToDb("process.json")
+
+process_query_handler = ProcessDataQueryHandler()
+process_query_handler.setDbPathOrUrl("activities.db")
+
+data2 = MetadataUploadHandler()
+data2.setDbPathOrUrl("http://10.201.14.121:9999/blazegraph/sparql")
+data2.pushDataToDb("meta.csv")
+
+metadata_query_handler = MetadataQueryHandler()
+metadata_query_handler.setDbPathOrUrl("http://10.201.14.121:9999/blazegraph/sparql")
+
+mashup = AdvancedMashup()
+mashup.addProcessHandler(process_query_handler)
+mashup.addMetadataHandler(metadata_query_handler)
+
+r = mashup.getActivitiesOnObjectsAuthoredBy("VIAF:100190422")
+print(r)
+print(len(r))
+for i in r:
+    print(i.institute, i.person, i.tool, i.start, i.end, i.refers_to)
