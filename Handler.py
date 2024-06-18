@@ -184,7 +184,7 @@ class QueryHandler(Handler):
             SELECT* WHERE{
             ?obj schema:identifier '%s'.
             ?obj schema:identifier ?id .  
-            VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:Manuscript schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
+            VALUES ?type {res:NauticalChart res:ManuscriptPlate schema:ManuscriptVolume schema:Book res:PrintedMaterial res:Herbarium res:Specimen schema:Painting res:Model schema:Map}
             ?obj rdf:type ?type.
             ?obj schema:title ?title.
             ?obj schema:dateCreated ?date.
