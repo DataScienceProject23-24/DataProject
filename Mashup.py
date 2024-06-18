@@ -27,7 +27,8 @@ class BasicMashup(object):
         return True 
 
     # E Z G I #
-    if "Authors" in df.columns:
+    def combineAuthorsOfObjects(self,df,handler):
+        if "Authors" in df.columns:
             for idx, row in df.iterrows():
                 if row["Authors"] != "":
                     id = row["id"]
