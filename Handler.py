@@ -460,3 +460,18 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union.fillna("")
         
+data = ProcessDataUploadHandler()
+data.setDbPathOrUrl("activities.db")
+data.pushDataToDb("process.json")
+
+process_query_handler = ProcessDataQueryHandler()
+process_query_handler.setDbPathOrUrl("activities.db")
+
+data2 = MetadataUploadHandler()
+data2.setDbPathOrUrl("http://10.201.12.161:9999/blazegraph/sparql")
+data2.pushDataToDb("meta.csv")
+
+metadata_query_handler = MetadataQueryHandler()
+metadata_query_handler.setDbPathOrUrl("http://10.201.12.161:9999/blazegraph/sparql")
+
+#print(metadata_query_handler.getCulturalHeritageObjectsAuthoredBy("VIAF:78822798"))

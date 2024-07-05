@@ -512,20 +512,17 @@ process_query_handler = ProcessDataQueryHandler()
 process_query_handler.setDbPathOrUrl("activities.db")
 
 data2 = MetadataUploadHandler()
-data2.setDbPathOrUrl("http://10.201.14.121:9999/blazegraph/sparql")
+data2.setDbPathOrUrl("http://10.201.12.161:9999/blazegraph/sparql")
 data2.pushDataToDb("meta.csv")
 
 metadata_query_handler = MetadataQueryHandler()
-metadata_query_handler.setDbPathOrUrl("http://10.201.14.121:9999/blazegraph/sparql")
+metadata_query_handler.setDbPathOrUrl("http://10.201.12.161:9999/blazegraph/sparql")
 
 mashup = AdvancedMashup()
 mashup.addProcessHandler(process_query_handler)
 mashup.addMetadataHandler(metadata_query_handler)
 
-r = mashup.getObjectsHandledByResponsibleInstitution("Council")
-print(r)
-print(len(r))
-for i in r:
-    #print(i.id, i.name)
-    #print(i.institute, i.person, i.tool, i.start, i.end, i.refers_to)
-    print(i.id, i.title, i.date, i.owner, i.place, i.hasAuthor)
+example = mashup.getActivitiesOnObjectsAuthoredBy("VIAF:263904234")
+#print(example)
+for x in example:
+    print(x.getResponsibleInsitute())
