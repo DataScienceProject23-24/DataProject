@@ -28,21 +28,22 @@ class BasicMashup(object):
 
     # E Z G I #
     def combineAuthorsOfObjects(self,df,handler):
-        for idx, row in df.iterrows():
-            if row["Authors"] != "":
-                id = row["id"]
-                authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
-                authors_df.insert(loc=0,column="id",value=str(id))
-                authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
-                if authors_df.shape[0]>1:
-                    output = authors_df.groupby('id')['auth'].apply(';'.join)
-                    df.at[idx,"Authors"] = str(output.iloc[0])
-                else:
-                    df.at[idx,"Authors"] = authors_df.iloc[0,0]
+        if "Authors" in df.columns:
+            for idx, row in df.iterrows():
+                if row["Authors"] != "":
+                    id = row["id"]
+                    authors_df = handler.getAuthorsOfCulturalHeritageObject(id)
+                    authors_df.insert(loc=0,column="id",value=str(id))
+                    authors_df.insert(loc=0,column="auth",value=authors_df['authorName'].astype(str) +"-"+ authors_df["authorId"].astype(str))
+                    if authors_df.shape[0]>1:
+                        output = authors_df.groupby('id')['auth'].apply(';'.join)
+                        df.at[idx,"Authors"] = str(output.iloc[0])
+                    else:
+                        df.at[idx,"Authors"] = authors_df.iloc[0,0]
         return df.drop_duplicates()
 
     # A N N A #
-    def getEntityById(self, id):                                #checked for both person and obj ids 
+    def getEntityById(self, id):                               
         handler_list = self.metadataQuery
         df_list = []
 
@@ -105,7 +106,7 @@ class BasicMashup(object):
                 else:
                     return None
             
-    def getAllPeople(self):                     #checked!          
+    def getAllPeople(self):                             
         handler_list = self.metadataQuery
         df_list = []
         result = []
@@ -120,7 +121,7 @@ class BasicMashup(object):
         return result
     
 
-    def getAllCulturalHeritageObjects(self):        #checked, error with Authors!!!
+    def getAllCulturalHeritageObjects(self):        
         handler_list = self.metadataQuery
         df_list = []
         result = []
@@ -176,7 +177,7 @@ class BasicMashup(object):
     
 
 
-    def getAuthorsOfCulturalHeritageObject(self, id):           #checked! 
+    def getAuthorsOfCulturalHeritageObject(self, id):           
         result = []
         handler_list = self.metadataQuery
         df_list = []
@@ -287,7 +288,7 @@ class BasicMashup(object):
                 
         return result 
     
-    def getActivitiesByResponsibleInstitution(self, partialName):       #checked, empty list???????????
+    def getActivitiesByResponsibleInstitution(self, partialName):       
         result = []
         handler_list = self.processQuery
         df_list = []
@@ -503,3 +504,36 @@ class AdvancedMashup(BasicMashup):
         authors = [Person(id = auth[0],name=auth[1]) for auth in authors_of_obj]
         return authors
 
+
+
+u=ProcessDataUploadHandler()
+uu = MetadataUploadHandler()
+grp_endpoint = "http://10.201.14.42:9999/blazegraph/sparql"
+path = r"C:\Users\annap\Documents\GitHub\DataProject\process.json"
+path_ = r"C:\Users\annap\Documents\GitHub\DataProject\meta.csv"
+u.setDbPathOrUrl("activities.db")
+u.pushDataToDb(path)
+uu.setDbPathOrUrl(grp_endpoint)
+uu.pushDataToDb(path_)
+q = ProcessDataQueryHandler()
+qq = MetadataQueryHandler()
+q.setDbPathOrUrl("activities.db")
+qq.setDbPathOrUrl(grp_endpoint)
+am = AdvancedMashup()
+am.addProcessHandler(q)
+am.addMetadataHandler(qq)
+ 
+i = am.getActivitiesOnObjectsAuthoredBy("VIAF:100190422")
+for it in i:
+    print(it)
+
+
+
+
+#for i in obj:
+#    print(i.id, i.title, i.date, i.owner, i.place, i.hasAuthor)
+
+
+
+#i.id, i.title, i.date, i.owner, i.place
+#i.institute, i.person, i.tool, i.start, i.end, i.refers_to
