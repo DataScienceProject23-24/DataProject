@@ -26,7 +26,7 @@ class MetadataUploadHandler(UploadHandler):
         super().__init__()
 
     # A N N A #
-    def pushDataToDb(self, path):
+    def pushDataToDb(self, path:str):
         my_graph = Graph()
         NauticalChart = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/NauticalChart") 
         ManuscriptPlate = URIRef("https://github.com/DataScienceProject23-24/DataProject/tree/main/resources/ManuscriptPlate") 
@@ -59,13 +59,13 @@ class MetadataUploadHandler(UploadHandler):
         #Now i read my DataFrame
         CulturalHeritageObject = pd.read_csv(path, keep_default_na=False, 
                         dtype={
-                            "Id" : "string",
-                            "Title" : "string",
-                            "Date" : "string",
-                            "Author" : "string",
-                            "Owner" : "string",
-                            "Place" : "string",
-                            "Type" : "string"
+                            "Id" : str,
+                            "Title" : str,
+                            "Date" : str,
+                            "Author" : str,
+                            "Owner" : str,
+                            "Place" : str,
+                            "Type" : str
                         }).drop_duplicates() 
         
         #now I insert all the objects in the graph 
@@ -147,7 +147,7 @@ class ProcessDataUploadHandler(UploadHandler):
         super().__init__()
 
     # E Z G I #
-    def pushDataToDb(self, path):
+    def pushDataToDb(self, path:str):
         process_json = pd.read_json(path)
         norm_df=[]
         cols = ["acquisition","processing","modelling","optimising","exporting"]
@@ -357,7 +357,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union.fillna("")
 
-    def getActivitiesByResponsibleInstitution(self, partialName):
+    def getActivitiesByResponsibleInstitution(self, partialName:str):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = 'SELECT * FROM Acquisition WHERE "responsible institute" LIKE ?;'
             df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
@@ -374,7 +374,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union.fillna("")   
     
-    def getActivitiesByResponsiblePerson(self, partialName):
+    def getActivitiesByResponsiblePerson(self, partialName:str):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = 'SELECT * FROM Acquisition WHERE "responsible person" LIKE ?;'
             df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
@@ -393,7 +393,7 @@ class ProcessDataQueryHandler(QueryHandler):
 
 
     # V I R G I #
-    def getActivitiesUsingTool(self, partialName):
+    def getActivitiesUsingTool(self, partialName:str):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = 'SELECT * FROM Acquisition WHERE "tool" LIKE ?;'
             df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))
@@ -410,7 +410,7 @@ class ProcessDataQueryHandler(QueryHandler):
             df_union = pd.concat(union_list, ignore_index=True)
             return df_union.fillna("")
   
-    def getActivitiesStartedAfter(self, date):
+    def getActivitiesStartedAfter(self, date:str):
         with connect(self.getDbPathOrUrl()) as con:
             q1 = 'SELECT * FROM Acquisition WHERE "start date" >= ?;'
             df_a = pd.read_sql(q1, con, params=(date,))
@@ -428,25 +428,26 @@ class ProcessDataQueryHandler(QueryHandler):
             return df_union.fillna("")
 
 
-    def getActivitiesEndedBefore(self, date):
+    def getActivitiesEndedBefore(self, date:str):
         with connect(self.getDbPathOrUrl()) as con:
-            q1 = 'SELECT * FROM Acquisition WHERE "end date" <= ?;'
+            q1 = 'SELECT * FROM Acquisition WHERE "end date" <= ? AND NOT "end date"="" ;'
             df_a = pd.read_sql(q1, con, params=(date,))
-            q2= 'SELECT * FROM Processing WHERE "end date" <= ?;'
+            q2= 'SELECT * FROM Processing WHERE "end date" <= ? AND NOT "end date"="";'
             df_p = pd.read_sql(q2, con, params=(date,))
-            q3 = 'SELECT * FROM Modelling WHERE "end date" <= ?;'
+            q3 = 'SELECT * FROM Modelling WHERE "end date" <= ? AND NOT "end date"="";'
             df_m = pd.read_sql(q3,con, params=(date,))
-            q4 = 'SELECT * FROM Optimising WHERE "end date" <= ?;'
+            q4 = 'SELECT * FROM Optimising WHERE "end date" <= ? AND NOT "end date"="";'
             df_o = pd.read_sql(q4,con, params=(date,))
-            q5 = 'SELECT * FROM Exporting WHERE "end date" <= ?;'
+            q5 = 'SELECT * FROM Exporting WHERE "end date" <= ? AND NOT "end date"="";'
             df_e = pd.read_sql(q5,con, params=(date,))
 
             union_list = [df_a, df_p, df_m, df_o, df_e]
             df_union = pd.concat(union_list, ignore_index=True)
-            return df_union.fillna("")
+
+            return df_union
 
     
-    def getAcquisitionsByTechnique(self, partialName):
+    def getAcquisitionsByTechnique(self, partialName:str):
         with connect(self.getDbPathOrUrl()) as con:        
             q1 = 'SELECT * FROM Acquisition WHERE "technique" LIKE ?;'
             df_a = pd.read_sql(q1, con, params=(f"%{partialName}%",))

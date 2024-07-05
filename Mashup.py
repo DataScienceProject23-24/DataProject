@@ -43,14 +43,14 @@ class BasicMashup(object):
         return df.drop_duplicates()
 
     # A N N A #
-    def getEntityById(self, id):                                 
+    def getEntityById(self, id:str):                                 
         handler_list = self.metadataQuery
         df_list = []
 
         for handler in handler_list:
             entity = handler.getById(id)
             entity_update = self.combineAuthorsOfObjects(entity,handler)
-            df_list.append(entity_update) 
+            df_list.append(entity_update)
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("") 
 
         for _,row in df_union.iterrows():
@@ -62,45 +62,45 @@ class BasicMashup(object):
                     return None
                             
             else:
-                type = row["type"]
+                obj_type = row["type"]
 
-                if "NauticalChart" in type:
+                if "NauticalChart" in obj_type:
                     return NauticalChart(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
-                elif "ManuscriptPlate" in type:
+                elif "ManuscriptPlate" in obj_type:
                     return ManuscriptPlate(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
                     
 
-                elif "ManuscriptVolume" in type:
+                elif "ManuscriptVolume" in obj_type:
                     return ManuscriptVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
-                elif "Book" in type:
+                elif "Book" in obj_type:
                     return PrintedVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
-                elif "PrintedMaterial" in type:
+                elif "PrintedMaterial" in obj_type:
                     return PrintedMaterial(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
-                elif "Herbarium" in type:
+                elif "Herbarium" in obj_type:
                     return Herbarium(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
-                elif "Specimen" in type:
+                elif "Specimen" in obj_type:
                     return  Specimen(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
-                elif "Painting" in type:
+                elif "Painting" in obj_type:
                     return Painting(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
-                elif "Model" in type:
+                elif "Model" in obj_type:
                     return Model(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
-                elif "Map" in type:
+                elif "Map" in obj_type:
                     return Map(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 
                 else:
@@ -133,51 +133,51 @@ class BasicMashup(object):
         df_union = pd.concat(df_list, ignore_index=True).drop_duplicates().fillna("")
 
         for _, row in df_union.iterrows():
-            type = row['type']
-            if "NauticalChart" in type:
+            obj_type = row['type']
+            if "NauticalChart" in obj_type:
                 object = NauticalChart(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "ManuscriptPlate" in type:
+            elif "ManuscriptPlate" in obj_type:
                 object = ManuscriptPlate(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
                 result.append(object) 
 
-            elif "ManuscriptVolume" in type:
+            elif "ManuscriptVolume" in obj_type:
                 object = ManuscriptVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Book" in type:
+            elif "Book" in obj_type:
                 object = PrintedVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "PrintedMaterial" in type:
+            elif "PrintedMaterial" in obj_type:
                 object = PrintedMaterial(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Herbarium" in type:
+            elif "Herbarium" in obj_type:
                 object = Herbarium(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Specimen" in type:
+            elif "Specimen" in obj_type:
                 object = Specimen(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Painting" in type:
+            elif "Painting" in obj_type:
                 object = Painting(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Model" in type:
+            elif "Model" in obj_type:
                 object = Model(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Map" in type:
+            elif "Map" in obj_type:
                 object = Map(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
         return result
     
 
 
-    def getAuthorsOfCulturalHeritageObject(self, id):            
+    def getAuthorsOfCulturalHeritageObject(self, id:str):            
         result = []
         handler_list = self.metadataQuery
         df_list = []
@@ -196,7 +196,7 @@ class BasicMashup(object):
         return result
     
     # V A L E #
-    def getCulturalHeritageObjectsAuthoredBy(self, authorId):       
+    def getCulturalHeritageObjectsAuthoredBy(self, authorId:str):       
         result = []
         handler_list = self.metadataQuery
         df_list = []
@@ -209,45 +209,45 @@ class BasicMashup(object):
 
         for _, row in df_union.iterrows():
 
-            type = row['type']
+            obj_type = row['type']
 
-            if "NauticalChart" in type:
+            if "NauticalChart" in obj_type:
                 object = NauticalChart(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "ManuscriptPlate" in type:
+            elif "ManuscriptPlate" in obj_type:
                 object = ManuscriptPlate(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
                 result.append(object) 
 
-            elif "ManuscriptVolume" in type:
+            elif "ManuscriptVolume" in obj_type:
                 object = ManuscriptVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Book" in type:
+            elif "Book" in obj_type:
                 object = PrintedVolume(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "PrintedMaterial" in type:
+            elif "PrintedMaterial" in obj_type:
                 object = PrintedMaterial(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Herbarium" in type:
+            elif "Herbarium" in obj_type:
                 object = Herbarium(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Specimen" in type:
+            elif "Specimen" in obj_type:
                 object = Specimen(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Painting" in type:
+            elif "Painting" in obj_type:
                 object = Painting(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Model" in type:
+            elif "Model" in obj_type:
                 object = Model(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
-            elif "Map" in type:
+            elif "Map" in obj_type:
                 object = Map(id=row["id"],title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)    
 
@@ -288,7 +288,7 @@ class BasicMashup(object):
                 
         return result 
     
-    def getActivitiesByResponsibleInstitution(self, partialName):       
+    def getActivitiesByResponsibleInstitution(self, partialName:str):       
         result = []
         handler_list = self.processQuery
         df_list = []
@@ -321,7 +321,7 @@ class BasicMashup(object):
                 result.append(object)  
         return result
     
-    def getActivitiesByResponsiblePerson(self, partialName):     
+    def getActivitiesByResponsiblePerson(self, partialName:str):     
         result = []
         handler_list = self.processQuery
         df_list = []
@@ -445,7 +445,7 @@ class AdvancedMashup(BasicMashup):
         super().__init__()
 
     # V A L E #
-    def getActivitiesOnObjectsAuthoredBy(self, personId):               
+    def getActivitiesOnObjectsAuthoredBy(self, personId:str):               
         cultural_objects = self.getCulturalHeritageObjectsAuthoredBy(personId)
         id_list = []
         for object in cultural_objects:
@@ -459,7 +459,7 @@ class AdvancedMashup(BasicMashup):
 
 
     # V I R G I #
-    def getObjectsHandledByResponsiblePerson(self, name):              
+    def getObjectsHandledByResponsiblePerson(self, name:str):              
         activities = self.getActivitiesByResponsiblePerson(name)
         id_list = []
         for activity in activities:
@@ -477,7 +477,7 @@ class AdvancedMashup(BasicMashup):
 
 
     # A N N A #
-    def getObjectsHandledByResponsibleInstitution(self, institution):       
+    def getObjectsHandledByResponsibleInstitution(self, institution:str):       
         activities = self.getActivitiesByResponsibleInstitution(institution)
         id_list = []
         for activity in activities:
