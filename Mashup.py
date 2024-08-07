@@ -46,7 +46,6 @@ class BasicMashup(object):
     def getEntityById(self, id:str):                                 
         handler_list = self.metadataQuery
         df_list = []
-        id = str(id)
         for handler in handler_list:
             entity = handler.getById(id)
             entity_update = self.combineAuthorsOfObjects(entity,handler)
@@ -57,7 +56,7 @@ class BasicMashup(object):
             if "authorName" in row:
                 author = row['authorName']
                 if author != "":
-                    return Person(id=id,name = row['authorName'])
+                    return Person(id=str(id),name = row['authorName'])
                 elif author == "":
                     return None
                             
@@ -65,43 +64,43 @@ class BasicMashup(object):
                 obj_type = row["type"]
 
                 if "NauticalChart" in obj_type:
-                    return NauticalChart(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return NauticalChart(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "ManuscriptPlate" in obj_type:
-                    return ManuscriptPlate(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
+                    return ManuscriptPlate(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
                     
 
                 elif "ManuscriptVolume" in obj_type:
-                    return ManuscriptVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return ManuscriptVolume(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Book" in obj_type:
-                    return PrintedVolume(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return PrintedVolume(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "PrintedMaterial" in obj_type:
-                    return PrintedMaterial(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return PrintedMaterial(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Herbarium" in obj_type:
-                    return Herbarium(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return Herbarium(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Specimen" in obj_type:
-                    return  Specimen(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return  Specimen(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Painting" in obj_type:
-                    return Painting(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return Painting(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Model" in obj_type:
-                    return Model(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return Model(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Map" in obj_type:
-                    return Map(id=id, title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return Map(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
                 
                 else:
                     return None

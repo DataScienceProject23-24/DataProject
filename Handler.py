@@ -58,15 +58,7 @@ class MetadataUploadHandler(UploadHandler):
 
         #Now i read my DataFrame
         CulturalHeritageObject = pd.read_csv(path, keep_default_na=False, 
-                        dtype={
-                            "Id" : str,
-                            "Title" : str,
-                            "Date" : str,
-                            "Author" : str,
-                            "Owner" : str,
-                            "Place" : str,
-                            "Type" : str
-                        }).drop_duplicates() 
+                        dtype=str).drop_duplicates()
         
         #now I insert all the objects in the graph 
         for idx, row in CulturalHeritageObject.iterrows():
