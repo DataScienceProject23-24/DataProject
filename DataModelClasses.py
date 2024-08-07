@@ -1,14 +1,14 @@
 # E Z G I #
 class IdentifiableEntity(object):
     def __init__(self, id:str):
-        self.id = id
+        self.id = str(id)
     def getId(self):
         return self.id
 
 
 class Person(IdentifiableEntity):
     def __init__(self, id:str, name:str):
-        super().__init__(id)
+        super().__init__(str(id))
         self.name = name
     def getName(self):
         return self.name
@@ -16,7 +16,7 @@ class Person(IdentifiableEntity):
 # V I R G I #
 class CulturalHeritageObject(IdentifiableEntity):
     def __init__(self, id:str, title:str, date:str, owner:str, place:str, authors):
-        super().__init__(id)
+        super().__init__(str(id))
         self.title = str(title)
         self.date = str(date)
         self.owner = str(owner)
@@ -99,7 +99,7 @@ class Activity(object):
         self.end = str(end)
         self.refers_to = refers_to
      
-    def getResponsibleInsitute(self):
+    def getResponsibleInstitute(self):
         return self.institute
     
     def getResponsiblePerson(self):
