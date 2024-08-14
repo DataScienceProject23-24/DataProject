@@ -64,43 +64,43 @@ class BasicMashup(object):
                 obj_type = row["type"]
 
                 if "NauticalChart" in obj_type:
-                    return NauticalChart(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return NauticalChart(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "ManuscriptPlate" in obj_type:
-                    return ManuscriptPlate(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
+                    return ManuscriptPlate(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])    
                     
 
                 elif "ManuscriptVolume" in obj_type:
-                    return ManuscriptVolume(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return ManuscriptVolume(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Book" in obj_type:
-                    return PrintedVolume(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return PrintedVolume(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "PrintedMaterial" in obj_type:
-                    return PrintedMaterial(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return PrintedMaterial(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Herbarium" in obj_type:
-                    return Herbarium(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return Herbarium(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Specimen" in obj_type:
-                    return  Specimen(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return  Specimen(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Painting" in obj_type:
-                    return Painting(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return Painting(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Model" in obj_type:
-                    return Model(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return Model(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                     
 
                 elif "Map" in obj_type:
-                    return Map(id=str(id), title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                    return Map(id=str(id), title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 
                 else:
                     return None
@@ -134,43 +134,43 @@ class BasicMashup(object):
         for _, row in df_union.iterrows():
             obj_type = row['type']
             if "NauticalChart" in obj_type:
-                object = NauticalChart(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = NauticalChart(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "ManuscriptPlate" in obj_type:
-                object = ManuscriptPlate(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
+                object = ManuscriptPlate(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])    
                 result.append(object) 
 
             elif "ManuscriptVolume" in obj_type:
-                object = ManuscriptVolume(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = ManuscriptVolume(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Book" in obj_type:
-                object = PrintedVolume(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = PrintedVolume(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "PrintedMaterial" in obj_type:
-                object = PrintedMaterial(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = PrintedMaterial(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Herbarium" in obj_type:
-                object = Herbarium(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Herbarium(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Specimen" in obj_type:
-                object = Specimen(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Specimen(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Painting" in obj_type:
-                object = Painting(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Painting(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Model" in obj_type:
-                object = Model(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Model(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Map" in obj_type:
-                object = Map(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Map(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
         return result
     
@@ -211,43 +211,43 @@ class BasicMashup(object):
             obj_type = row['type']
 
             if "NauticalChart" in obj_type:
-                object = NauticalChart(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = NauticalChart(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "ManuscriptPlate" in obj_type:
-                object = ManuscriptPlate(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])    
+                object = ManuscriptPlate(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])    
                 result.append(object) 
 
             elif "ManuscriptVolume" in obj_type:
-                object = ManuscriptVolume(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = ManuscriptVolume(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Book" in obj_type:
-                object = PrintedVolume(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = PrintedVolume(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "PrintedMaterial" in obj_type:
-                object = PrintedMaterial(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = PrintedMaterial(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Herbarium" in obj_type:
-                object = Herbarium(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Herbarium(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Specimen" in obj_type:
-                object = Specimen(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Specimen(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Painting" in obj_type:
-                object = Painting(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Painting(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Model" in obj_type:
-                object = Model(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Model(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)
 
             elif "Map" in obj_type:
-                object = Map(id = str(row["id"]),title=row['title'], date=row['date'], owner=row['owner'], place=row['place'], authors=row['Authors'])
+                object = Map(id = str(row["id"]),title=row['title'], date=str(row['date']), owner=row['owner'], place=row['place'], authors=row['Authors'])
                 result.append(object)    
 
         return result
