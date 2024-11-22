@@ -33,7 +33,7 @@ class CulturalHeritageObject(IdentifiableEntity):
                 author_name, author_id = auth[0].split("-")
                 self.hasAuthor.add(Person(id=str(author_id),name=str(author_name)))
         else:
-            self.hasAuthor.add(None)
+            self.hasAuthor = None
 
     def getTitle(self):
         return self.title
@@ -49,8 +49,11 @@ class CulturalHeritageObject(IdentifiableEntity):
     
     def getAuthors(self):
         result_authors = []
-        for author in self.hasAuthor:
-            result_authors.append(author)
+        if self.hasAuthor == None:
+            return result_authors
+        else:
+            for author in self.hasAuthor:
+                result_authors.append(author)
         return result_authors
 
     
